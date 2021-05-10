@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a7fedd53b63d6d245acb5b809ff84f8f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - EffectStartPos: {instanceID: 0}
+  - AttackEffect: {instanceID: 0}
+  - bulletStartPos: {instanceID: 0}
+  - ArrowInMesh: {instanceID: 0}
+  - attackClip: {fileID: 8300000, guid: 6ca6c3ff1e22ab54aa274a20c6eb3703, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

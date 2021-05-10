@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1094674540024",
+    "project_id": "sgartd-3811e",
+    "firebase_url": "https://sgartd-3811e-default-rtdb.firebaseio.com/",
+    "storage_bucket": "sgartd-3811e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094674540024:android:8051990720b7ad3cd5620d",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.RTD"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094674540024-r2m7gvaeolnq7dfdd6l0f26prohmrhpj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgLI0fWQlqEzDZWKHCEVV9QbtEXQ7FDPY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094674540024-r2m7gvaeolnq7dfdd6l0f26prohmrhpj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

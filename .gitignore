@@ -1,3 +1,22 @@
+# JDH
+**/Assets/Editor Default Resources/*
+**/Assets/ExternalDependencyManager/*
+**/Assets/Firebase/*
+**/Assets/MemoryProfiler/*
+**/Assets/Parse/*
+**/Assets/Plugins/*
+**/Assets/StreamingAssets/*
+
+# JDH 
+!*.*.meta
+Editor Default Resources.meta
+ExternalDependencyManager.meta
+Firebase.meta
+MemoryProfiler.meta
+Parse.meta
+Plugins.meta
+StreamingAssets.meta
+
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
