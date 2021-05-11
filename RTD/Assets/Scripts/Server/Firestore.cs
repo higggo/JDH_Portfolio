@@ -1,12 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Firebase.Database;
 using Firebase.Firestore;
 using Firebase.Extensions;
+using Firebase.Auth;
 public class Firestore : MonoBehaviour
 {
-    
+    public TMPro.TextMeshProUGUI Text;
+
+    Firebase.Auth.FirebaseAuth auth;
+    string googleIdToken;
+    string googleAccessToken;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -68,7 +75,7 @@ public class Firestore : MonoBehaviour
      });
 
 
-        Firebase.Auth.FirebaseAuth auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+        auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
         Firebase.Auth.Credential credential =
     Firebase.Auth.GoogleAuthProvider.GetCredential(googleIdToken, googleAccessToken);
         auth.SignInWithCredentialAsync(credential).ContinueWith(task => {
@@ -87,5 +94,28 @@ public class Firestore : MonoBehaviour
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
         });
+    }
+
+    private void Update()
+    {
+
+    }
+
+    public void ButtonClick()
+    {
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        if (user != null)
+        {
+            string name = user.DisplayName;
+            string email = user.Email;
+            System.Uri photo_url = user.PhotoUrl;
+            // The user's Id, unique to the Firebase project.
+            // Do NOT use this value to authenticate with your backend server, if you
+            // have one; use User.TokenAsync() instead.
+            string uid = user.UserId;
+
+            Text.text = name + ", " + email + ", " + uid;
+            Debug.Log(name + ", " + email + ", " + uid);
+        }
     }
 }
