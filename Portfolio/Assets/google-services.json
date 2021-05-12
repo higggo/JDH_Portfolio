@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "872497828709",
+    "firebase_url": "https://jdhportfolio-9f04b-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "jdhportfolio-9f04b",
+    "storage_bucket": "jdhportfolio-9f04b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872497828709:android:39774756ab0b1753c3078c",
+        "android_client_info": {
+          "package_name": "com.Higggo.Portfolio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "872497828709-96flje2t5af6eekkbb7fu47gj2adomn1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Higggo.Portfolio",
+            "certificate_hash": "675d2180c7fd29c6358f35b53b2135011f3c8eaf"
+          }
+        },
+        {
+          "client_id": "872497828709-ignjp1sl8uaihhcm6pfrokq8o72593rp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Higggo.Portfolio",
+            "certificate_hash": "f2606e7d5a4e955c2bac5be67b8a01160e72e7db"
+          }
+        },
+        {
+          "client_id": "872497828709-71vq1pf3hud03salf2nquc2b3habhno5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4xvlLWI8b1lSc9pO0vamffxzJxl79nzY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "872497828709-71vq1pf3hud03salf2nquc2b3habhno5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
