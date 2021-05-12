@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using Google;
 
@@ -21,12 +19,20 @@ public class Signin : MonoBehaviour
 
     public TMPro.TMP_InputField Signup_Email;
     public TMPro.TMP_InputField Signup_Password;
-    // Start is called before the first frame update
-    void Start()
+
+    // Defer the configuration creation until Awake so the web Client ID
+    // Can be set via the property inspector in the Editor.
+    void Awake()
     {
         auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+
+        configuration = new GoogleSignInConfiguration
+        {
+            WebClientId = webClientId,
+            RequestIdToken = true
+        };
+
     }
-    
     public void SigningIn()
     {
         auth.SignInWithEmailAndPasswordAsync(Signin_Email.text, Signin_Password.text).ContinueWith(task => {
@@ -44,12 +50,14 @@ public class Signin : MonoBehaviour
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
+
+            ThreadDispatcher.I.RunOnMainThread(() => { NextScene(); return 0; });
         });
     }
 
-    public void SigningUp()
+    public async void SigningUp()
     {
-        auth.CreateUserWithEmailAndPasswordAsync(Signup_Email.text, Signup_Password.text).ContinueWith(task => {
+        await auth.CreateUserWithEmailAndPasswordAsync(Signup_Email.text, Signup_Password.text).ContinueWith(task => {
             if (task.IsCanceled)
             {
                 Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
@@ -65,9 +73,10 @@ public class Signin : MonoBehaviour
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("Firebase user created successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
+
+            ThreadDispatcher.I.RunOnMainThread(() => { NextScene(); return 0; });
         });
     }
-
     public void SigninAnonymous()
     {
         auth.SignInAnonymouslyAsync().ContinueWith(task => {
@@ -85,6 +94,7 @@ public class Signin : MonoBehaviour
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
+            ThreadDispatcher.I.RunOnMainThread(() => { NextScene(); return 0; });
         });
     }
 
@@ -124,7 +134,12 @@ public class Signin : MonoBehaviour
         else
         {
             Debug.Log("Welcome: " + task.Result.DisplayName + "!");
+            ThreadDispatcher.I.RunOnMainThread(() => { NextScene(); return 0; });
         }
     }
 
+    public void NextScene()
+    {
+        SceneManager.LoadScene(1);
+    }
 }
