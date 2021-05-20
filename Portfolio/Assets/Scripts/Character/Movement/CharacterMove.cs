@@ -38,9 +38,11 @@ public class LeaderboardEntry
 
     public Dictionary<string, object> ToDictionary()
     {
-        Dictionary<string, object> result = new Dictionary<string, object>();
-        result["uid"] = uid;
-        result["pos"] = pos;
+       Dictionary<string, object> result = new Dictionary<string, object>();
+       //result["uid"] = uid;
+       result["x"] = pos.x;
+       result["y"] = pos.y;
+       result["z"] = pos.z;
 
         return result;
     }
@@ -66,11 +68,11 @@ public class CharacterMove : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            WriteNewScore(user.UserId, transform.position);
+            SendCharactorPos(user.UserId, transform.position);
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
-
+            TakeCharacterPos();
         }
         if(Input.GetKeyDown(KeyCode.W))
         {
@@ -85,7 +87,7 @@ public class CharacterMove : MonoBehaviour
 
         }
     }
-    private void WriteNewScore(string userId, Vector3 pos)
+    private void SendCharactorPos(string userId, Vector3 pos)
     {
         // Create new entry at /user-scores/$userid/$scoreid and at
         // /leaderboard/$scoreid simultaneously
@@ -94,10 +96,42 @@ public class CharacterMove : MonoBehaviour
         Dictionary<string, object> entryValues = entry.ToDictionary();
 
         Dictionary<string, object> childUpdates = new Dictionary<string, object>();
-        childUpdates["/scores/" + key] = entryValues;
-        childUpdates["/user-scores/" + userId + "/" + key] = entryValues;
+       // childUpdates["/scores/" + key] = entryValues;
+        childUpdates["/CharacterInfo/" + userId + "/pos"] = entryValues;
+        //childUpdates["/user-scores/" + userId + "/" + key] = entryValues;
 
         reference.UpdateChildrenAsync(childUpdates);
+
+
+        User user = new User(name, email);
+        string json = JsonUtility.ToJson(user);
+
+        mDatabaseRef.Child("users").Child(userId).SetRawJsonValueAsync(json);
     }
 
+    private void TakeCharacterPos()
+    {
+        FirebaseDatabase.DefaultInstance
+        .GetReference("CharacterInfo/" + user.UserId + "Pos")
+        .ValueChanged += HandleValueChanged;
+
+    }
+
+    void HandleValueChanged(object sender, ValueChangedEventArgs args)
+    {
+        if (args.DatabaseError != null)
+        {
+            Debug.LogError(args.DatabaseError.Message);
+            return;
+        }
+        Debug.Log(args.Snapshot);
+    }
+
+
+    public void PushData()
+    {
+        UnityEngine.Assertions.Assert.IsNotNull(database, "Database ref is null!");
+        string json = JsonUtility.ToJson(data);
+        reference.Child(dbPathName).SetRawJsonValueAsync(json);
+    }
 }
