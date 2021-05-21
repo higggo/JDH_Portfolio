@@ -61,6 +61,8 @@ public class CharacterMove : MonoBehaviour
         auth = FirebaseAuth.DefaultInstance;
 
         user = auth.CurrentUser;
+
+        TakeCharacterPos();
     }
 
     // Update is called once per frame
@@ -70,13 +72,17 @@ public class CharacterMove : MonoBehaviour
         {
             SendCharactorPos(user.UserId, transform.position);
         }
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKey(KeyCode.D))
         {
-            TakeCharacterPos();
+            Vector3 deltaPos = Vector3.zero;
+            deltaPos.x += Time.deltaTime;
+            PushData(deltaPos);
         }
-        if(Input.GetKeyDown(KeyCode.W))
+        if(Input.GetKey(KeyCode.A))
         {
-
+            Vector3 deltaPos = Vector3.zero;
+            deltaPos.x -= Time.deltaTime;
+            PushData(deltaPos);
         }
         if(Input.GetKeyDown(KeyCode.W))
         {
@@ -102,18 +108,14 @@ public class CharacterMove : MonoBehaviour
 
         reference.UpdateChildrenAsync(childUpdates);
 
-
-        User user = new User(name, email);
-        string json = JsonUtility.ToJson(user);
-
-        mDatabaseRef.Child("users").Child(userId).SetRawJsonValueAsync(json);
     }
 
     private void TakeCharacterPos()
     {
         FirebaseDatabase.DefaultInstance
-        .GetReference("CharacterInfo/" + user.UserId + "Pos")
+        .GetReference("users")
         .ValueChanged += HandleValueChanged;
+
 
     }
 
@@ -125,13 +127,19 @@ public class CharacterMove : MonoBehaviour
             return;
         }
         Debug.Log(args.Snapshot);
+
+        User newValue = JsonUtility.FromJson<User>(args.Snapshot.Child(user.UserId).GetRawJsonValue());
+        Debug.Log(newValue.pos);
+        transform.position = newValue.pos;
     }
 
 
-    public void PushData()
+    public void PushData(Vector3 delta)
     {
-        UnityEngine.Assertions.Assert.IsNotNull(database, "Database ref is null!");
-        string json = JsonUtility.ToJson(data);
-        reference.Child(dbPathName).SetRawJsonValueAsync(json);
+        
+        UnityEngine.Assertions.Assert.IsNotNull(reference, "Database ref is null!");
+        User temp = new User(name, transform.position + delta);
+        string json = JsonUtility.ToJson(temp);        
+        reference.Child("users").Child(user.UserId).SetRawJsonValueAsync(json);
     }
 }
