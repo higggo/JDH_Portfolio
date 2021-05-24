@@ -126,11 +126,13 @@ public class CharacterMove : MonoBehaviour
             Debug.LogError(args.DatabaseError.Message);
             return;
         }
-        Debug.Log(args.Snapshot);
 
-        User newValue = JsonUtility.FromJson<User>(args.Snapshot.Child(user.UserId).GetRawJsonValue());
-        Debug.Log(newValue.pos);
-        transform.position = newValue.pos;
+        if(args.Snapshot.HasChild(user.UserId))
+        {
+            User newValue = JsonUtility.FromJson<User>(args.Snapshot.Child(user.UserId).GetRawJsonValue());
+            Debug.Log(newValue.pos);
+            transform.position = newValue.pos;
+        }
     }
 
 
@@ -142,4 +144,5 @@ public class CharacterMove : MonoBehaviour
         string json = JsonUtility.ToJson(temp);        
         reference.Child("users").Child(user.UserId).SetRawJsonValueAsync(json);
     }
+
 }

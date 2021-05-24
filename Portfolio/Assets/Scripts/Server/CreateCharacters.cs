@@ -38,4 +38,15 @@ public class CreateCharacters : MonoBehaviour
     {
         
     }
+
+    public void OnApplicationQuit()
+    {
+        Debug.Log("OnApplicationQuit");
+        reference.Child("users").Child(user.UserId).RemoveValueAsync();
+    }
+
+    public void LogOut()
+    {
+        reference.Child("users").Child(user.UserId).RemoveValueAsync();
+    } 
 }
