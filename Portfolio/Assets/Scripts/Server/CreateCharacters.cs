@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 using Firebase.Database;
 using Firebase.Auth;
 public class CreateCharacters : MonoBehaviour
@@ -8,6 +9,10 @@ public class CreateCharacters : MonoBehaviour
     DatabaseReference reference;
     FirebaseAuth auth;
     FirebaseUser user;
+
+    public Transform Collection;
+
+    int cnt = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,22 +20,18 @@ public class CreateCharacters : MonoBehaviour
         reference = FirebaseDatabase.DefaultInstance.RootReference;
         auth = FirebaseAuth.DefaultInstance;
 
-        user = auth.CurrentUser;
+        if (Collection == null) Collection = GameObject.Find("Collection").transform;
+        //Instantiate(Resources.Load("BasicCharacters/BowHitman"), Collection);
 
+        DirectoryInfo dir = new DirectoryInfo("Assets/Resources/BasicCharacters");
+        FileInfo[] info = dir.GetFiles("*.prefab");
 
-        FirebaseDatabase.DefaultInstance
-          .GetReference("users")
-          .GetValueAsync().ContinueWith(task => {
-              if (task.IsFaulted)
-              {
-                  // Handle the error...
-              }
-              else if (task.IsCompleted)
-              {
-                  DataSnapshot snapshot = task.Result;
-                  // Do something with snapshot...
-              }
-          });
+        foreach (FileInfo f in info)
+        {
+            Debug.Log(f.Name);
+            
+            Instantiate(Resources.Load("BasicCharacters/"+ f.Name.Replace(".prefab", "")), Collection);
+        }
     }
 
     // Update is called once per frame
