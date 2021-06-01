@@ -334,7 +334,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 778829532}
-        m_MethodName: NextCharacter
+        m_MethodName: CompareID
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

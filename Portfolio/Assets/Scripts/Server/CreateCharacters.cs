@@ -38,7 +38,6 @@ public class CreateCharacters : MonoBehaviour
         DirectoryInfo dir = new DirectoryInfo("Assets/Resources/BasicCharacters");
         FileInfo[] info = dir.GetFiles("*.prefab");
 
-        GameObject obj;
         string path;
         foreach (FileInfo f in info)
         {
@@ -60,14 +59,15 @@ public class CreateCharacters : MonoBehaviour
 
     public void LogOut()
     {
+        Debug.Log("LogOut");
         reference.Child("users").Child(user.UserId).RemoveValueAsync();
-    } 
+    }
 
     public void NextCharacter()
     {
         CollectionCharacters[selectNum].Character.SetActive(false);
         selectNum++;
-        if(selectNum > CollectionCharacters.Count - 1)
+        if (selectNum > CollectionCharacters.Count - 1)
             selectNum = 0;
         CollectionCharacters[selectNum].Character.SetActive(true);
     }
@@ -77,22 +77,60 @@ public class CreateCharacters : MonoBehaviour
         CollectionCharacters[selectNum].Character.SetActive(false);
         selectNum--;
         if (selectNum < 0)
-            selectNum = CollectionCharacters.Count-1;
+            selectNum = CollectionCharacters.Count - 1;
         CollectionCharacters[selectNum].Character.SetActive(true);
     }
 
-    public void SelectCharacter()
+    public void CreateCharacter()
     {
-            DocumentReference docRef = db.Collection("user").Document("info");
-            Dictionary<string, object> userInfo = new Dictionary<string, object>
+        /*
+         * Dictionary<string, object> city = new Dictionary<string, object>
+{
+        { "Name", "Tokyo" },
+        { "Country", "Japan" }
+};
+db.Collection("cities").AddAsync(city).ContinueWithOnMainThread(task => {
+        DocumentReference addedDocRef = task.Result;
+        Debug.Log(String.Format("Added document with ID: {0}.", addedDocRef.Id));
+});
+         */
+        DocumentReference docRef = db.Collection("user").Document(ID_Inputfield.text);
+        Dictionary<string, object> userInfo = new Dictionary<string, object>
              {
-                { "CharacterPath", CollectionCharacters[selectNum].path },
-                { "uid", user.UserId },
-                { "cid", ID_Inputfield.text }
+                { "ResourcePath", CollectionCharacters[selectNum].path },
+                { "uid", auth.CurrentUser.UserId }
             };
 
-             docRef.SetAsync(userInfo).ContinueWithOnMainThread(task => {
-                Debug.Log("Create User Characater");
-            });
+        docRef.SetAsync(userInfo).ContinueWithOnMainThread(task =>
+        {
+            Debug.Log("Create User Characater");
+            Debug.Log("ResourcePath : " + CollectionCharacters[selectNum].path);
+            Debug.Log("uid : " + auth.CurrentUser.UserId);
+            Debug.Log("cid : " + ID_Inputfield.text);
+        });
+
+    }
+
+    public void CompareID()
+    {
+        Firebase.Firestore.Query allCitiesQuery = db.Collection("user");
+        allCitiesQuery.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            QuerySnapshot allCitiesQuerySnapshot = task.Result;
+            foreach (DocumentSnapshot documentSnapshot in allCitiesQuerySnapshot.Documents)
+            {
+                if(ID_Inputfield.text == documentSnapshot.Id)
+                {
+                    Debug.Log("해당 아이디가 존재합니다.");
+                    return;
+                }
+                if(ID_Inputfield.text == "")
+                {
+                    Debug.Log("아이디를 입력해 주세요.");
+                    return;
+                }
+            }
+            CreateCharacter();
+        });
     }
 }
