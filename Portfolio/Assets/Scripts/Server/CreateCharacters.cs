@@ -6,10 +6,12 @@ using Firebase.Database;
 using Firebase.Auth;
 using Firebase.Firestore;
 using Firebase.Extensions;
-public class CharacterCollection
+public class CreateCharacterInfo
 {
     public GameObject Character;
     public string path;
+    public int slot;
+    public string cid;
 }
 public class CreateCharacters : MonoBehaviour
 {
@@ -19,20 +21,24 @@ public class CreateCharacters : MonoBehaviour
     FirebaseFirestore db;
 
     public Transform CollectionPool;
+    public Transform MyCharacterPool;
     public TMPro.TMP_InputField ID_Inputfield;
 
-    public List<CharacterCollection> CollectionCharacters;
+    public List<CreateCharacterInfo> CollectionCharacters;
+    public List<CreateCharacterInfo> MyCharacters;
 
     int selectNum = 0;
     // Start is called before the first frame update
     void Start()
     {
-        CollectionCharacters = new List<CharacterCollection>();
+        CollectionCharacters = new List<CreateCharacterInfo>();
+        MyCharacters = new List<CreateCharacterInfo>();
         reference = FirebaseDatabase.DefaultInstance.RootReference;
         db = FirebaseFirestore.DefaultInstance;
         auth = FirebaseAuth.DefaultInstance;
 
-        if (CollectionPool == null) CollectionPool = GameObject.Find("Collection").transform;
+        if (CollectionPool == null) CollectionPool = GameObject.Find("CollectionPool").transform;
+        if (MyCharacterPool == null) MyCharacterPool = GameObject.Find("MyCharacterPool").transform;
         if (ID_Inputfield == null) ID_Inputfield = GameObject.Find("ID_InputField").GetComponent<TMPro.TMP_InputField>();
 
         DirectoryInfo dir = new DirectoryInfo("Assets/Resources/BasicCharacters");
@@ -41,7 +47,7 @@ public class CreateCharacters : MonoBehaviour
         string path;
         foreach (FileInfo f in info)
         {
-            CharacterCollection c = new CharacterCollection();
+            CreateCharacterInfo c = new CreateCharacterInfo();
             path = "BasicCharacters/" + f.Name.Replace(".prefab", "");
             c.Character = Instantiate(Resources.Load(path), CollectionPool) as GameObject;
             c.Character.SetActive(false);
@@ -49,6 +55,8 @@ public class CreateCharacters : MonoBehaviour
             CollectionCharacters.Add(c);
         }
         CollectionCharacters[selectNum].Character.SetActive(true);
+
+        GetCharacters();
     }
 
     public void OnApplicationQuit()
@@ -118,5 +126,66 @@ public class CreateCharacters : MonoBehaviour
             }
             CreateCharacter();
         });
+
+        Firebase.Firestore.Query capitalQuery = db.Collection("user").WhereEqualTo("uid", auth.CurrentUser.UserId);
+        capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
+            QuerySnapshot capitalQuerySnapshot = task.Result;
+            if(capitalQuerySnapshot.Count >= 3)
+            {
+                Debug.Log("슬롯이 가득 찼습니다.");
+                return;
+            }
+        });
+    }
+
+    public void GetCharacters()
+    {
+        Firebase.Firestore.Query capitalQuery = db.Collection("user").WhereEqualTo("uid", auth.CurrentUser.UserId);
+        capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
+            QuerySnapshot capitalQuerySnapshot = task.Result;
+            foreach (DocumentSnapshot documentSnapshot in capitalQuerySnapshot.Documents)
+            {
+                Debug.Log(string.Format("Document data for {0} document:", documentSnapshot.Id));
+                Dictionary<string, object> city = documentSnapshot.ToDictionary();
+
+                CreateCharacterInfo c = new CreateCharacterInfo();
+                foreach (KeyValuePair<string, object> pair in city)
+                {
+
+                    Debug.Log(string.Format("{0}: {1}", pair.Key, pair.Value));
+                    if(pair.Key == "ResourcePath")
+                    {
+                        c.path = pair.Value.ToString();
+                    }
+                    if(pair.Key == "cid")
+                    {
+                        c.cid = pair.Value.ToString();
+                    }
+                }
+                GameObject obj = Instantiate(Resources.Load("Character"), GetSlot()) as GameObject;
+                obj.transform.Find("Canvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = c.cid;
+                c.Character = Instantiate(Resources.Load(c.path), obj.transform) as GameObject;
+
+                MyCharacters.Add(c);
+
+                // Newline to separate entries
+                Debug.Log("");
+            };
+        });
+    }
+
+    Transform GetSlot()
+    {
+        Transform t = transform;
+        for (int i=0; i < MyCharacterPool.childCount; i++)
+        {
+            if(MyCharacterPool.GetChild(i).childCount == 0)
+            {
+                t = MyCharacterPool.GetChild(i);
+                break;
+            }
+        }
+
+        return t;
     }
 }
