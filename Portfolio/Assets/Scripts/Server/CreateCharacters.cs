@@ -83,52 +83,38 @@ public class CreateCharacters : MonoBehaviour
 
     public void CreateCharacter()
     {
-        /*
-         * Dictionary<string, object> city = new Dictionary<string, object>
-{
-        { "Name", "Tokyo" },
-        { "Country", "Japan" }
-};
-db.Collection("cities").AddAsync(city).ContinueWithOnMainThread(task => {
-        DocumentReference addedDocRef = task.Result;
-        Debug.Log(String.Format("Added document with ID: {0}.", addedDocRef.Id));
-});
-         */
-        DocumentReference docRef = db.Collection("user").Document(ID_Inputfield.text);
-        Dictionary<string, object> userInfo = new Dictionary<string, object>
-             {
-                { "ResourcePath", CollectionCharacters[selectNum].path },
-                { "uid", auth.CurrentUser.UserId }
-            };
-
-        docRef.SetAsync(userInfo).ContinueWithOnMainThread(task =>
+        Dictionary<string, object> user = new Dictionary<string, object>
         {
+            { "ResourcePath", CollectionCharacters[selectNum].path },
+            { "uid", auth.CurrentUser.UserId },
+            { "cid", ID_Inputfield.text }
+        };
+        db.Collection("user").AddAsync(user).ContinueWithOnMainThread(task => {
+            DocumentReference addedDocRef = task.Result;
+            Debug.Log(string.Format("Added document with ID: {0}.", addedDocRef.Id));
             Debug.Log("Create User Characater");
             Debug.Log("ResourcePath : " + CollectionCharacters[selectNum].path);
             Debug.Log("uid : " + auth.CurrentUser.UserId);
             Debug.Log("cid : " + ID_Inputfield.text);
         });
-
     }
 
     public void CompareID()
     {
-        Firebase.Firestore.Query allCitiesQuery = db.Collection("user");
-        allCitiesQuery.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        string cid = ID_Inputfield.text;
+        if (cid == "")
         {
-            QuerySnapshot allCitiesQuerySnapshot = task.Result;
-            foreach (DocumentSnapshot documentSnapshot in allCitiesQuerySnapshot.Documents)
+            Debug.Log("아이디를 입력해 주세요.");
+            return;
+        }
+
+        Firebase.Firestore.Query allCitiesQuery = db.Collection("user").WhereEqualTo("cid", cid);
+        allCitiesQuery.GetSnapshotAsync().ContinueWithOnMainThread(querySnapshotTask =>
+        {
+            foreach (DocumentSnapshot documentSnapshot in querySnapshotTask.Result.Documents)
             {
-                if(ID_Inputfield.text == documentSnapshot.Id)
-                {
-                    Debug.Log("해당 아이디가 존재합니다.");
-                    return;
-                }
-                if(ID_Inputfield.text == "")
-                {
-                    Debug.Log("아이디를 입력해 주세요.");
-                    return;
-                }
+                Debug.Log("해당 아이디가 존재합니다.");
+                return;
             }
             CreateCharacter();
         });
