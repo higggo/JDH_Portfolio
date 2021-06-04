@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 using Firebase.Database;
 using Firebase.Auth;
@@ -162,10 +163,14 @@ public class CreateCharacters : MonoBehaviour
                         c.cid = pair.Value.ToString();
                     }
                 }
-                GameObject obj = Instantiate(Resources.Load("Character"), GetSlot()) as GameObject;
+                Transform slot = GetSlot();
+                GameObject obj = Instantiate(Resources.Load("Character"), slot) as GameObject;
                 obj.transform.Find("Canvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = c.cid;
                 c.Character = Instantiate(Resources.Load(c.path), obj.transform) as GameObject;
 
+                GetSelectButton(slot).onClick.AddListener(() => {
+                    
+                });
                 MyCharacters.Add(c);
 
                 // Newline to separate entries
@@ -179,13 +184,19 @@ public class CreateCharacters : MonoBehaviour
         Transform t = transform;
         for (int i=0; i < MyCharacterPool.childCount; i++)
         {
-            if(MyCharacterPool.GetChild(i).childCount == 0)
+            if(MyCharacterPool.GetChild(i).Find("Slot").childCount == 0)
             {
-                t = MyCharacterPool.GetChild(i);
+                MyCharacterPool.GetChild(i).Find("Canvas").gameObject.SetActive(true);
+                t = MyCharacterPool.GetChild(i).Find("Slot");
                 break;
             }
         }
 
         return t;
+    }
+
+    Button GetSelectButton(Transform slot)
+    {
+        return slot.parent.Find("Canvas").Find("SelectButton").GetComponent<Button>();
     }
 }
