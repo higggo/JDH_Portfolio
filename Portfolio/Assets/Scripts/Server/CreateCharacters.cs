@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.IO;
 using Firebase.Database;
 using Firebase.Auth;
@@ -29,6 +30,7 @@ public class CreateCharacters : MonoBehaviour
     public List<CreateCharacterInfo> MyCharacters;
 
     int selectNum = 0;
+    bool identifyActive = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -108,35 +110,78 @@ public class CreateCharacters : MonoBehaviour
         });
     }
 
-    public void CompareID()
+    public IEnumerator IdentifyIDField()
     {
+        List<bool> ingLIst = new List<bool>();
+        bool bImpossible = true;
         string cid = ID_Inputfield.text;
         if (cid == "")
         {
             Debug.Log("아이디를 입력해 주세요.");
-            return;
+        }
+        else
+        {
+            bImpossible = false;
         }
 
+        ingLIst.Add(true);
         Firebase.Firestore.Query allCitiesQuery = db.Collection("user").WhereEqualTo("cid", cid);
         allCitiesQuery.GetSnapshotAsync().ContinueWithOnMainThread(querySnapshotTask =>
         {
+            bImpossible = false;
             foreach (DocumentSnapshot documentSnapshot in querySnapshotTask.Result.Documents)
             {
                 Debug.Log("해당 아이디가 존재합니다.");
-                return;
+                bImpossible = true;
             }
-            CreateCharacter();
+            ingLIst[0] = false;
         });
 
+        ingLIst.Add(true);
         Firebase.Firestore.Query capitalQuery = db.Collection("user").WhereEqualTo("uid", auth.CurrentUser.UserId);
         capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
             QuerySnapshot capitalQuerySnapshot = task.Result;
-            if(capitalQuerySnapshot.Count >= 3)
+            if (capitalQuerySnapshot.Count >= 3)
             {
                 Debug.Log("슬롯이 가득 찼습니다.");
-                return;
+                bImpossible = true;
             }
+            else
+            {
+                bImpossible = false;
+            }
+            ingLIst[1] = false;
         });
+
+        bool bEnd = false;
+        while (!bEnd)
+        {
+            foreach (bool ing in ingLIst)
+            {
+                if (ing)
+                {
+                    bEnd = false;
+                    break;
+                }
+                else bEnd = true;
+            }
+
+            Debug.Log("bImpossible : " + bImpossible);
+            if(bEnd && !bImpossible)
+            {
+                CreateCharacter();
+            }
+            yield return null;
+        }
+        identifyActive = false;
+    }
+    public void CompareID()
+    {
+        if(!identifyActive)
+        {
+            identifyActive = true;
+            StartCoroutine(IdentifyIDField());
+        }
     }
 
     public void GetCharacters()
@@ -169,7 +214,7 @@ public class CreateCharacters : MonoBehaviour
                 c.Character = Instantiate(Resources.Load(c.path), obj.transform) as GameObject;
 
                 GetSelectButton(slot).onClick.AddListener(() => {
-                    
+                    FieldScene();
                 });
                 MyCharacters.Add(c);
 
@@ -198,5 +243,10 @@ public class CreateCharacters : MonoBehaviour
     Button GetSelectButton(Transform slot)
     {
         return slot.parent.Find("Canvas").Find("SelectButton").GetComponent<Button>();
+    }
+
+    public void FieldScene()
+    {
+        SceneManager.LoadScene(2);
     }
 }
