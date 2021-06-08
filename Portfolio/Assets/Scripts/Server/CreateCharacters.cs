@@ -265,7 +265,7 @@ public class CreateCharacters : MonoBehaviour
 
     public void FieldScene()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene("Scenes/Field");
     }
 
     public void MoveCollectionPos()
