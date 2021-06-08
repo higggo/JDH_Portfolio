@@ -29,11 +29,17 @@ public class CreateCharacters : MonoBehaviour
     public List<CreateCharacterInfo> CollectionCharacters;
     public List<CreateCharacterInfo> MyCharacters;
 
+    // Camera
+    Camera mainCamera;
+    Vector3 CameraCollectionPos = new Vector3(6.86f, 1.49f, 2.68f);
+    Vector3 CameraCreatePos = new Vector3(0.23f, 1.49f, 1.57f);
+
     int selectNum = 0;
     bool identifyActive = false;
     // Start is called before the first frame update
     void Start()
     {
+
         CollectionCharacters = new List<CreateCharacterInfo>();
         MyCharacters = new List<CreateCharacterInfo>();
         reference = FirebaseDatabase.DefaultInstance.RootReference;
@@ -43,6 +49,8 @@ public class CreateCharacters : MonoBehaviour
         if (CollectionPool == null) CollectionPool = GameObject.Find("CollectionPool").transform;
         if (MyCharacterPool == null) MyCharacterPool = GameObject.Find("MyCharacterPool").transform;
         if (ID_Inputfield == null) ID_Inputfield = GameObject.Find("ID_InputField").GetComponent<TMPro.TMP_InputField>();
+
+        mainCamera = Camera.main;
 
         DirectoryInfo dir = new DirectoryInfo("Assets/Resources/BasicCharacters");
         FileInfo[] info = dir.GetFiles("*.prefab");
@@ -113,26 +121,23 @@ public class CreateCharacters : MonoBehaviour
     public IEnumerator IdentifyIDField()
     {
         List<bool> ingLIst = new List<bool>();
-        bool bImpossible = true;
+        bool possibleCreate = true;
         string cid = ID_Inputfield.text;
         if (cid == "")
         {
             Debug.Log("아이디를 입력해 주세요.");
-        }
-        else
-        {
-            bImpossible = false;
+            possibleCreate = false;
         }
 
         ingLIst.Add(true);
         Firebase.Firestore.Query allCitiesQuery = db.Collection("user").WhereEqualTo("cid", cid);
         allCitiesQuery.GetSnapshotAsync().ContinueWithOnMainThread(querySnapshotTask =>
         {
-            bImpossible = false;
             foreach (DocumentSnapshot documentSnapshot in querySnapshotTask.Result.Documents)
             {
                 Debug.Log("해당 아이디가 존재합니다.");
-                bImpossible = true;
+                possibleCreate = false;
+                break;
             }
             ingLIst[0] = false;
         });
@@ -141,18 +146,15 @@ public class CreateCharacters : MonoBehaviour
         Firebase.Firestore.Query capitalQuery = db.Collection("user").WhereEqualTo("uid", auth.CurrentUser.UserId);
         capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
             QuerySnapshot capitalQuerySnapshot = task.Result;
-            if (capitalQuerySnapshot.Count >= 3)
+            if (capitalQuerySnapshot.Count >= 10)
             {
                 Debug.Log("슬롯이 가득 찼습니다.");
-                bImpossible = true;
-            }
-            else
-            {
-                bImpossible = false;
+                possibleCreate = false;
             }
             ingLIst[1] = false;
         });
 
+        // Waiting Server Response
         bool bEnd = false;
         while (!bEnd)
         {
@@ -165,14 +167,16 @@ public class CreateCharacters : MonoBehaviour
                 }
                 else bEnd = true;
             }
-
-            Debug.Log("bImpossible : " + bImpossible);
-            if(bEnd && !bImpossible)
-            {
-                CreateCharacter();
-            }
             yield return null;
         }
+        if (possibleCreate)
+        {
+            CreateCharacter();
+            GetCharacters();
+            MoveCollectionPos();
+        }
+
+        ingLIst.Clear();
         identifyActive = false;
     }
     public void CompareID()
@@ -182,10 +186,23 @@ public class CreateCharacters : MonoBehaviour
             identifyActive = true;
             StartCoroutine(IdentifyIDField());
         }
+        else
+        {
+            Debug.Log("응답 대기 중...");
+        }
     }
 
     public void GetCharacters()
     {
+        // 초기화
+        foreach(Transform t in MyCharacterPool)
+        {
+            foreach (Transform c in t.Find("Slot"))
+            {
+                Destroy(c.gameObject);
+            }
+        }
+
         Firebase.Firestore.Query capitalQuery = db.Collection("user").WhereEqualTo("uid", auth.CurrentUser.UserId);
         capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
             QuerySnapshot capitalQuerySnapshot = task.Result;
@@ -214,6 +231,7 @@ public class CreateCharacters : MonoBehaviour
                 c.Character = Instantiate(Resources.Load(c.path), obj.transform) as GameObject;
 
                 GetSelectButton(slot).onClick.AddListener(() => {
+                    MyInfo.SetInfo(c.cid, auth.CurrentUser.UserId, c.path);
                     FieldScene();
                 });
                 MyCharacters.Add(c);
@@ -248,5 +266,15 @@ public class CreateCharacters : MonoBehaviour
     public void FieldScene()
     {
         SceneManager.LoadScene(2);
+    }
+
+    public void MoveCollectionPos()
+    {
+        mainCamera.transform.position = CameraCollectionPos;
+    }
+
+    public void MoveCreatePos()
+    {
+        mainCamera.transform.position = CameraCreatePos;
     }
 }

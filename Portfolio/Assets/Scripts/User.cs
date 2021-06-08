@@ -2,23 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MyInfo : MonoBehaviour
+public class MyInfo
 {
     private static MyInfo instance;
-    string cid;
-    string resourcePath;
+    public string cid;
+    public string uid;
+    public string resourcePath;
     public static MyInfo I
     {
         get
         {
+            if (instance == null)
+                instance = new MyInfo();
             return instance;
         }
     }
 
-    public MyInfo(string cid, string resourcePath)
+    public static void SetInfo(string cid, string uid, string resourcePath)
     {
-        this.cid = cid;
-        this.resourcePath = resourcePath;
+        I.cid = cid;
+        I.uid = uid;
+        I.resourcePath = resourcePath;
     }
 }
 
