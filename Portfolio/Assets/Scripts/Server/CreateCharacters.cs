@@ -27,7 +27,6 @@ public class CreateCharacters : MonoBehaviour
     public TMPro.TMP_InputField ID_Inputfield;
 
     public List<CreateCharacterInfo> CollectionCharacters;
-    public List<CreateCharacterInfo> MyCharacters;
 
     // Camera
     Camera mainCamera;
@@ -41,7 +40,6 @@ public class CreateCharacters : MonoBehaviour
     {
 
         CollectionCharacters = new List<CreateCharacterInfo>();
-        MyCharacters = new List<CreateCharacterInfo>();
         reference = FirebaseDatabase.DefaultInstance.RootReference;
         db = FirebaseFirestore.DefaultInstance;
         auth = FirebaseAuth.DefaultInstance;
@@ -106,7 +104,16 @@ public class CreateCharacters : MonoBehaviour
         {
             { "ResourcePath", CollectionCharacters[selectNum].path },
             { "uid", auth.CurrentUser.UserId },
-            { "cid", ID_Inputfield.text }
+            { "cid", ID_Inputfield.text },
+            { "state", "Idle" },
+            { "location", "Town"},
+            { "pos", new Dictionary<string, object>
+                {
+                        { "x", 0.0f },
+                        { "y", 0.0f },
+                        { "z", 0.0f }
+                }
+            }
         };
         db.Collection("user").AddAsync(user).ContinueWithOnMainThread(task => {
             DocumentReference addedDocRef = task.Result;
@@ -231,10 +238,8 @@ public class CreateCharacters : MonoBehaviour
                 c.Character = Instantiate(Resources.Load(c.path), obj.transform) as GameObject;
 
                 GetSelectButton(slot).onClick.AddListener(() => {
-                    MyInfo.SetInfo(c.cid, auth.CurrentUser.UserId, c.path);
-                    FieldScene();
+                    UpdateCharacterRTDB(city);
                 });
-                MyCharacters.Add(c);
 
                 // Newline to separate entries
                 Debug.Log("");
@@ -276,5 +281,11 @@ public class CreateCharacters : MonoBehaviour
     public void MoveCreatePos()
     {
         mainCamera.transform.position = CameraCreatePos;
+    }
+
+    public void UpdateCharacterRTDB(Dictionary<string, object> myinfo)
+    {
+        reference.Child("users").Child("Town").Child(auth.CurrentUser.UserId).UpdateChildrenAsync(myinfo);
+        FieldScene();
     }
 }

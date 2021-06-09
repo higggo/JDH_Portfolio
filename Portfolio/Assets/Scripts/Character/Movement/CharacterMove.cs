@@ -40,10 +40,6 @@ public class CharacterMove : MonoBehaviour
         {
 
         }
-        if(Input.GetKeyDown(KeyCode.W))
-        {
-
-        }
     }
     private void TakeCharacterPos()
     {

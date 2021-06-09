@@ -18,4 +18,8 @@ public class Field : MonoBehaviour
     {
         
     }
+
+    void GetCharactger()
+    {
+    }
 }
