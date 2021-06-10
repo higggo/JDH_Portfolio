@@ -238,7 +238,12 @@ public class CreateCharacters : MonoBehaviour
                 c.Character = Instantiate(Resources.Load(c.path), obj.transform) as GameObject;
 
                 GetSelectButton(slot).onClick.AddListener(() => {
-                    UpdateCharacterRTDB(city);
+                    //UpdateCharacterRTDB(city);
+                    RDWrite.UpdateCharacterLocation(city);
+                    //if (RDWrite.UpdateCharacterLocation(city))
+                    //{
+                    //    FieldScene();
+                    //}
                 });
 
                 // Newline to separate entries
@@ -285,7 +290,14 @@ public class CreateCharacters : MonoBehaviour
 
     public void UpdateCharacterRTDB(Dictionary<string, object> myinfo)
     {
-        reference.Child("users").Child("Town").Child(auth.CurrentUser.UserId).UpdateChildrenAsync(myinfo);
+        if(reference.Child("users/Town").Child(auth.CurrentUser.UserId).UpdateChildrenAsync(myinfo).IsCompleted)
+        {
+
+        }
+        else
+        {
+
+        }
         FieldScene();
     }
 }
