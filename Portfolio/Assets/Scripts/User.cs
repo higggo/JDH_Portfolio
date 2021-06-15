@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//https://twnkls.com/en/blogs/howto-native-android-plugins-for-unity3d-2/
 public class MyInfo
 {
     private static MyInfo instance;
