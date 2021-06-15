@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using Google;
+using Firebase.Firestore;
 
 public class Signin : MonoBehaviour
 {
@@ -32,6 +33,36 @@ public class Signin : MonoBehaviour
             RequestIdToken = true
         };
 
+    }
+    private void Start()
+    {
+        string s = "";
+        FBConnection.Read.GetAllcharacter((task)=> {
+            QuerySnapshot capitalQuerySnapshot = task.Result;
+            foreach (DocumentSnapshot documentSnapshot in capitalQuerySnapshot.Documents)
+            {
+                Dictionary<string, object> info = documentSnapshot.ToDictionary();
+
+                CreateCharacterInfo c = new CreateCharacterInfo();
+                foreach (KeyValuePair<string, object> pair in info)
+                {
+
+                    Debug.Log(string.Format("{0}: {1}", pair.Key, pair.Value));
+                    if (pair.Key == "ResourcePath")
+                    {
+                        s += pair.Value.ToString();
+                        Debug.Log(pair.Value.ToString());
+                    }
+                    if (pair.Key == "cid")
+                    {
+                        s += pair.Value.ToString();
+                        Debug.Log(pair.Value.ToString());
+                    }
+                }
+            };
+            ThreadDispatcher.I.RunOnMainThread(() => { GameObject.Find("TestText").GetComponent<TMPro.TextMeshProUGUI>().text = s; return 0; });
+
+        });
     }
     public void SigningIn()
     {

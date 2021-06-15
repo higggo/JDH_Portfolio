@@ -5,20 +5,11 @@ using UnityEngine;
 
 public class FAuth : MonoBehaviour
 {
-    FirebaseAuth auth;
-    protected static FirebaseUser user;
-    // Start is called before the first frame update
-    void Start()
+    public static FirebaseUser CurrentUser
     {
-        auth = FirebaseAuth.DefaultInstance;
-        //user = auth.CurrentUser;
-        //Debug.Log("FAuth.cs__ user : " + user.UserId);
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        get
+        {
+            return FirebaseAuth.DefaultInstance.CurrentUser;
+        }
     }
 }

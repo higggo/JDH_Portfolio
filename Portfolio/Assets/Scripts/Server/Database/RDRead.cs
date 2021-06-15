@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class RDRead : RDReference
 {
-    // Start is called before the first frame update
-    void Start()
+    public void GetTownCharacters(CallbackData callback)
     {
-        
-    }
+        reference.Child("users/Town").GetValueAsync().ContinueWith(task => {
+            ThreadDispatcher.I.RunOnMainThread(()=> { callback(task); return 0; });
+        });
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        RDConnection.Listener.TownCharacterAddListener();
     }
 }

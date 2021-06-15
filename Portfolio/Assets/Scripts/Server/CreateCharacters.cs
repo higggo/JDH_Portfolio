@@ -8,6 +8,7 @@ using Firebase.Database;
 using Firebase.Auth;
 using Firebase.Firestore;
 using Firebase.Extensions;
+using System.Threading.Tasks;
 public class CreateCharacterInfo
 {
     public GameObject Character;
@@ -50,28 +51,23 @@ public class CreateCharacters : MonoBehaviour
 
         mainCamera = Camera.main;
 
-        DirectoryInfo dir = new DirectoryInfo("Assets/Resources/BasicCharacters");
-        FileInfo[] info = dir.GetFiles("*.prefab");
+        //DirectoryInfo dir = new DirectoryInfo("Assets/Resources/BasicCharacters");
+        //FileInfo[] info = dir.GetFiles("*.prefab");
 
-        string path;
-        foreach (FileInfo f in info)
+        List<string> BasicCharacters = new List<string>();
+        BasicCharacters.Add("BowHitman");
+        BasicCharacters.Add("BowHunter");
+        foreach (string str in BasicCharacters)
         {
             CreateCharacterInfo c = new CreateCharacterInfo();
-            path = "BasicCharacters/" + f.Name.Replace(".prefab", "");
-            c.Character = Instantiate(Resources.Load(path), CollectionPool) as GameObject;
+            c.Character = Instantiate(Resources.Load("BasicCharacters/"+str), CollectionPool) as GameObject;
             c.Character.SetActive(false);
-            c.path = path;
+            c.path = "BasicCharacters/" + str;
             CollectionCharacters.Add(c);
         }
         CollectionCharacters[selectNum].Character.SetActive(true);
 
         GetCharacters();
-    }
-
-    public void OnApplicationQuit()
-    {
-        Debug.Log("OnApplicationQuit");
-        reference.Child("users").Child(user.UserId).RemoveValueAsync();
     }
 
     public void LogOut()
@@ -199,6 +195,47 @@ public class CreateCharacters : MonoBehaviour
         }
     }
 
+    public void GetCharactersCallBack(Task<QuerySnapshot> task)
+    {
+        QuerySnapshot capitalQuerySnapshot = task.Result;
+        foreach (DocumentSnapshot documentSnapshot in capitalQuerySnapshot.Documents)
+        {
+            Dictionary<string, object> info = documentSnapshot.ToDictionary();
+
+            CreateCharacterInfo c = new CreateCharacterInfo();
+            foreach (KeyValuePair<string, object> pair in info)
+            {
+
+                Debug.Log(string.Format("{0}: {1}", pair.Key, pair.Value));
+                if (pair.Key == "ResourcePath")
+                {
+                    c.path = pair.Value.ToString();
+                }
+                if (pair.Key == "cid")
+                {
+                    c.cid = pair.Value.ToString();
+                }
+            }
+            Transform slot = GetSlot();
+            GameObject obj = Instantiate(Resources.Load("Character"), slot) as GameObject;
+            obj.transform.Find("Canvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = c.cid;
+            Instantiate(Resources.Load(c.path), obj.transform);
+
+            GetSelectButton(slot).onClick.AddListener(() => {
+                RDConnection.Write.UpdateCharacterLocation(info, (res) => {
+                    if (res.IsFaulted)
+                    {
+                        Debug.Log("UpdateCharacterLocation Faild");
+                        return;
+                    }
+                    else if (res.IsCompleted)
+                    {
+                        FieldScene();
+                    }
+                });
+            });
+        };
+    }
     public void GetCharacters()
     {
         // 초기화
@@ -209,47 +246,7 @@ public class CreateCharacters : MonoBehaviour
                 Destroy(c.gameObject);
             }
         }
-
-        Firebase.Firestore.Query capitalQuery = db.Collection("user").WhereEqualTo("uid", auth.CurrentUser.UserId);
-        capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
-            QuerySnapshot capitalQuerySnapshot = task.Result;
-            foreach (DocumentSnapshot documentSnapshot in capitalQuerySnapshot.Documents)
-            {
-                Debug.Log(string.Format("Document data for {0} document:", documentSnapshot.Id));
-                Dictionary<string, object> city = documentSnapshot.ToDictionary();
-
-                CreateCharacterInfo c = new CreateCharacterInfo();
-                foreach (KeyValuePair<string, object> pair in city)
-                {
-
-                    Debug.Log(string.Format("{0}: {1}", pair.Key, pair.Value));
-                    if(pair.Key == "ResourcePath")
-                    {
-                        c.path = pair.Value.ToString();
-                    }
-                    if(pair.Key == "cid")
-                    {
-                        c.cid = pair.Value.ToString();
-                    }
-                }
-                Transform slot = GetSlot();
-                GameObject obj = Instantiate(Resources.Load("Character"), slot) as GameObject;
-                obj.transform.Find("Canvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = c.cid;
-                c.Character = Instantiate(Resources.Load(c.path), obj.transform) as GameObject;
-
-                GetSelectButton(slot).onClick.AddListener(() => {
-                    //UpdateCharacterRTDB(city);
-                    RDWrite.UpdateCharacterLocation(city);
-                    //if (RDWrite.UpdateCharacterLocation(city))
-                    //{
-                    //    FieldScene();
-                    //}
-                });
-
-                // Newline to separate entries
-                Debug.Log("");
-            };
-        });
+        FBConnection.Read.GetMyCharacterList(GetCharactersCallBack);
     }
 
     Transform GetSlot()
@@ -264,7 +261,6 @@ public class CreateCharacters : MonoBehaviour
                 break;
             }
         }
-
         return t;
     }
 
@@ -286,18 +282,5 @@ public class CreateCharacters : MonoBehaviour
     public void MoveCreatePos()
     {
         mainCamera.transform.position = CameraCreatePos;
-    }
-
-    public void UpdateCharacterRTDB(Dictionary<string, object> myinfo)
-    {
-        if(reference.Child("users/Town").Child(auth.CurrentUser.UserId).UpdateChildrenAsync(myinfo).IsCompleted)
-        {
-
-        }
-        else
-        {
-
-        }
-        FieldScene();
     }
 }

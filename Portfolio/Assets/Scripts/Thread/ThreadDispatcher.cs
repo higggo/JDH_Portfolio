@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 // Enables callbacks to be dispatched from any thread and be handled on
 // the thread that owns the instance to this class (eg. the UIThread).
-internal class ThreadDispatcher
+internal class ThreadDispatcher : MonoBehaviour
 {
-    private static ThreadDispatcher instance = null;
+    private static ThreadDispatcher instance;
     private int ownerThreadId;
     private System.Collections.Generic.Queue<System.Action> queue =
         new System.Collections.Generic.Queue<System.Action>();
@@ -15,14 +15,25 @@ internal class ThreadDispatcher
         {
             if (instance == null)
             {
-                instance = new ThreadDispatcher();
+                instance = FindObjectOfType(typeof(ThreadDispatcher)) as ThreadDispatcher;
+                if (instance == null)
+                {
+                    instance = GameObject.Find("Server").AddComponent<ThreadDispatcher>();
+                }
+                return instance;
             }
             return instance;
         }
     }
-    public ThreadDispatcher()
+    private void Awake()
     {
         ownerThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+
+    }
+    private void Update()
+    {
+        Debug.Log("poll update");
+        ThreadDispatcher.I.PollJobs();
     }
 
     private class CallbackStorage<TResult>

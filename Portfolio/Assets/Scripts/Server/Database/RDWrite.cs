@@ -1,23 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RDWrite : RDReference
 {
-    // Start is called before the first frame update
-    void Start()
+    public void UpdateCharacterLocation(Dictionary<string, object> characterInfo, Callback callback)
     {
-        
+        reference.Child("users").Child("Town").Child(FAuth.CurrentUser.UserId).
+            UpdateChildrenAsync(characterInfo).ContinueWith(task =>
+        {
+            ThreadDispatcher.I.RunOnMainThread(()=> { callback(task); return 0; });
+            
+        });
+    }
+    public void RemoveUpdate()
+    {
+        reference.Child("users/Town").Child(FAuth.CurrentUser.UserId).RemoveValueAsync();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Test(Dictionary<string, object> characterInfo, Callback callback)
     {
-        
-    }
 
-    public static void UpdateCharacterLocation(Dictionary<string, object> characterInfo)
-    {
-        reference.Child("users").Child("Town").Child(FUser.I.UserId).UpdateChildrenAsync(characterInfo);
+        reference.Child("Test").UpdateChildrenAsync(characterInfo).ContinueWith(task =>
+            {
+                ThreadDispatcher.I.RunOnMainThread(() => { callback(task); return 0; });
+
+            });
     }
 }
