@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Firebase.Database;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +7,10 @@ public class RDRead : RDReference
 {
     public void GetTownCharacters(CallbackData callback)
     {
-        reference.Child("users/Town").GetValueAsync().ContinueWith(task => {
-            ThreadDispatcher.I.RunOnMainThread(()=> { callback(task); return 0; });
+        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child("Town").GetValueAsync().ContinueWith(task => {
+            Debug.Log(task.Result);
+            //callback(task);
+            UnityMainThread.wkr.AddJob(()=> { callback(task); });
         });
-
-        RDConnection.Listener.TownCharacterAddListener();
     }
 }

@@ -50,7 +50,7 @@ public class CreateCharacters : MonoBehaviour
         if (ID_Inputfield == null) ID_Inputfield = GameObject.Find("ID_InputField").GetComponent<TMPro.TMP_InputField>();
 
         mainCamera = Camera.main;
-
+        MoveCollectionPos();
         //DirectoryInfo dir = new DirectoryInfo("Assets/Resources/BasicCharacters");
         //FileInfo[] info = dir.GetFiles("*.prefab");
 
@@ -106,7 +106,7 @@ public class CreateCharacters : MonoBehaviour
             { "pos", new Dictionary<string, object>
                 {
                         { "x", 0.0f },
-                        { "y", 0.0f },
+                        { "y", 1.0f },
                         { "z", 0.0f }
                 }
             }
@@ -205,8 +205,6 @@ public class CreateCharacters : MonoBehaviour
             CreateCharacterInfo c = new CreateCharacterInfo();
             foreach (KeyValuePair<string, object> pair in info)
             {
-
-                Debug.Log(string.Format("{0}: {1}", pair.Key, pair.Value));
                 if (pair.Key == "ResourcePath")
                 {
                     c.path = pair.Value.ToString();
@@ -230,6 +228,7 @@ public class CreateCharacters : MonoBehaviour
                     }
                     else if (res.IsCompleted)
                     {
+                        FAuth.CID = c.cid;
                         FieldScene();
                     }
                 });

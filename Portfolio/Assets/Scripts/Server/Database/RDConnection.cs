@@ -40,6 +40,8 @@ public class RDConnection : MonoBehaviour
     {
         get
         {
+            //GameObject obj = Instantiate(Resources.Load("RDListener")) as GameObject;
+            //return obj.GetComponent<RDEventListener>();
             listener = FindObjectOfType(typeof(RDEventListener)) as RDEventListener;
             if (listener == null)
             {

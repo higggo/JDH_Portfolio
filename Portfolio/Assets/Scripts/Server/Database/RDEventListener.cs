@@ -7,10 +7,9 @@ public class RDEventListener : RDReference
 {
     public void TownCharacterAddListener()
     {
-        reference.Child("users/Town").ChildAdded += HandleChildAdded;
-        reference.Child("users/Town").ChildRemoved += HandleChildRemoved;
+        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child("Town").ChildAdded += HandleTownCharacterChildAdded;
     }
-    void HandleChildAdded(object sender, ChildChangedEventArgs args)
+    void HandleTownCharacterChildAdded(object sender, ChildChangedEventArgs args)
     {
         if (args.DatabaseError != null)
         {
@@ -18,7 +17,29 @@ public class RDEventListener : RDReference
             return;
         }
         // Do something with the data in args.Snapshot
+
         Debug.Log("HandleChildAdded : " + args.Snapshot);
+        foreach(DataSnapshot child in args.Snapshot.Children)
+        {
+            Debug.Log("Town Handle : {" + child.Key + ", " + child.Value + "}");
+        }
+    }
+
+    public void CharacterDestinationAddListener(string uid, string cid, System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)
+    {
+        FirebaseDatabase.DefaultInstance.RootReference.Child("Destination").Child(uid).Child(cid).LimitToLast(1).ChildAdded += handle;
+        
+    }
+    void HandleCharacterDestinationChildAdded(object sender, ChildChangedEventArgs args)
+    {
+        if (args.DatabaseError != null)
+        {
+            Debug.LogError(args.DatabaseError.Message);
+            return;
+        }
+        // Do something with the data in args.Snapshot
+
+        Debug.Log("HandleCharacterDestinationChildAdded : " + args.Snapshot);
     }
 
     void HandleChildChanged(object sender, ChildChangedEventArgs args)

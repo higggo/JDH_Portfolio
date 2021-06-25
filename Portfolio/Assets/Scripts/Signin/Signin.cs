@@ -60,7 +60,7 @@ public class Signin : MonoBehaviour
                     }
                 }
             };
-            ThreadDispatcher.I.RunOnMainThread(() => { GameObject.Find("TestText").GetComponent<TMPro.TextMeshProUGUI>().text = s; return 0; });
+            UnityMainThread.wkr.AddJob(() => { GameObject.Find("TestText").GetComponent<TMPro.TextMeshProUGUI>().text = s;});
 
         });
     }
@@ -82,7 +82,7 @@ public class Signin : MonoBehaviour
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
 
-            ThreadDispatcher.I.RunOnMainThread(() => { NextScene(); return 0; });
+            UnityMainThread.wkr.AddJob(() => { NextScene();});
         });
     }
 
@@ -105,7 +105,7 @@ public class Signin : MonoBehaviour
             Debug.LogFormat("Firebase user created successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
 
-            ThreadDispatcher.I.RunOnMainThread(() => { NextScene(); return 0; });
+            UnityMainThread.wkr.AddJob(() => { NextScene();});
         });
     }
     public void SigninAnonymous()
@@ -125,7 +125,7 @@ public class Signin : MonoBehaviour
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
-            ThreadDispatcher.I.RunOnMainThread(() => { NextScene(); return 0; });
+            UnityMainThread.wkr.AddJob(() => { NextScene();});
         });
     }
 
@@ -165,7 +165,7 @@ public class Signin : MonoBehaviour
         else
         {
             Debug.Log("Welcome: " + task.Result.DisplayName + "!");
-            ThreadDispatcher.I.RunOnMainThread(() => { NextScene(); return 0; });
+            UnityMainThread.wkr.AddJob(() => { NextScene();});
         }
     }
 

@@ -32,8 +32,7 @@ internal class ThreadDispatcher : MonoBehaviour
     }
     private void Update()
     {
-        Debug.Log("poll update");
-        ThreadDispatcher.I.PollJobs();
+        //ThreadDispatcher.I.PollJobs();
     }
 
     private class CallbackStorage<TResult>
@@ -72,7 +71,10 @@ internal class ThreadDispatcher : MonoBehaviour
             });
         }
         waitHandle.WaitOne();
-        if (result.Exception != null) throw result.Exception;
+        if (result.Exception != null)
+        {
+            throw result.Exception;
+        }
         return result.Result;
     }
 

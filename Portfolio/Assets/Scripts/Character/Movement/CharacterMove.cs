@@ -1,45 +1,58 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using Firebase.Database;
 using Firebase.Auth;
 
 public class CharacterMove : MonoBehaviour
 {
+    PathFinding MovePath;
+    CharacterEventHandler handler;
     DatabaseReference reference;
     FirebaseAuth auth;
     FirebaseUser user;
+
+    public string uid;
+    public string cid;
+
     // Start is called before the first frame update
     void Start()
     {
+        MovePath = gameObject.AddComponent<PathFinding>();
+        handler = gameObject.AddComponent<CharacterEventHandler>();
         // Get the root reference location of the database.
         reference = FirebaseDatabase.DefaultInstance.RootReference;
         auth = FirebaseAuth.DefaultInstance;
 
         user = auth.CurrentUser;
 
-        TakeCharacterPos();
+        RDConnection.Listener.CharacterDestinationAddListener(uid, cid, GetComponent<CharacterEventHandler>().HandleCharacterDestinationChildAdded);
+
+        //TakeCharacterPos();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.D))
-        {
-            Vector3 deltaPos = Vector3.zero;
-            deltaPos.x += Time.deltaTime;
-            PushData(deltaPos);
-        }
-        if(Input.GetKey(KeyCode.A))
-        {
-            Vector3 deltaPos = Vector3.zero;
-            deltaPos.x -= Time.deltaTime;
-            PushData(deltaPos);
-        }
-        if(Input.GetKeyDown(KeyCode.W))
-        {
+    //    if (Input.GetKey(KeyCode.D))
+    //    {
+    //        Vector3 deltaPos = Vector3.zero;
+    //        deltaPos.x += Time.deltaTime;
+    //        PushData(deltaPos);
+    //    }
+    //    if(Input.GetKey(KeyCode.A))
+    //    {
+    //        Vector3 deltaPos = Vector3.zero;
+    //        deltaPos.x -= Time.deltaTime;
+    //        PushData(deltaPos);
+    //    }
+    //    if(Input.GetKeyDown(KeyCode.W))
+    //    {
 
-        }
+    //    }
+
+
     }
     private void TakeCharacterPos()
     {

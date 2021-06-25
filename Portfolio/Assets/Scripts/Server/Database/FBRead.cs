@@ -10,7 +10,7 @@ public class FBRead : FBReference
     {
         Firebase.Firestore.Query capitalQuery = db.Collection("user").WhereEqualTo("uid", FAuth.CurrentUser.UserId);
         capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
-            ThreadDispatcher.I.RunOnMainThread(() => { callback(task); return 0; });
+            UnityMainThread.wkr.AddJob(() => { callback(task);});
         });
     }
 
@@ -18,7 +18,7 @@ public class FBRead : FBReference
     {
         Firebase.Firestore.Query capitalQuery = db.Collection("user");
         capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
-            ThreadDispatcher.I.RunOnMainThread(() => { callback(task); return 0; });
+            UnityMainThread.wkr.AddJob(() => { callback(task);});
         });
     }
 }
