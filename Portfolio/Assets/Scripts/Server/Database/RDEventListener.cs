@@ -5,24 +5,9 @@ using UnityEngine;
 
 public class RDEventListener : RDReference
 {
-    public void TownCharacterAddListener()
+    public void TownCharacterAddListener(System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)
     {
-        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child("Town").ChildAdded += HandleTownCharacterChildAdded;
-    }
-    void HandleTownCharacterChildAdded(object sender, ChildChangedEventArgs args)
-    {
-        if (args.DatabaseError != null)
-        {
-            Debug.LogError(args.DatabaseError.Message);
-            return;
-        }
-        // Do something with the data in args.Snapshot
-
-        Debug.Log("HandleChildAdded : " + args.Snapshot);
-        foreach(DataSnapshot child in args.Snapshot.Children)
-        {
-            Debug.Log("Town Handle : {" + child.Key + ", " + child.Value + "}");
-        }
+        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child("Town").ChildAdded += handle;
     }
 
     public void CharacterDestinationAddListener(string uid, string cid, System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)

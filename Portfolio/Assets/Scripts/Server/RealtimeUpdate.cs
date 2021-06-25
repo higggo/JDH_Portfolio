@@ -30,9 +30,7 @@ public class RealtimeUpdate : MonoBehaviour
 #endif
 
         ClickMask = 1 << 8;
-        RDConnection.Listener.TownCharacterAddListener();
-
-        OnPlaceCharacters();
+        ServerAysnInitialize();
     }
 
     void sendActivityReference(string packageName)
@@ -71,34 +69,6 @@ public class RealtimeUpdate : MonoBehaviour
                 RDConnection.Write.UpdateCharacterDestination(hit.point, (task) => { });
             }
         }
-        //timer += Time.deltaTime;
-        //timer1 += Time.deltaTime;
-
-        //if(timer > 5.0f)
-        //{
-        //    Dictionary<string, object> result = new Dictionary<string, object>();
-        //    result["time"] = timer1;
-        //    RDConnection.Write.Test(result, (res) => {
-        //        if (res.IsFaulted)
-        //        {
-        //            Debug.Log("UpdateCharacterLocation Faild");
-        //            return;
-        //        }
-        //        else if (res.IsCompleted)
-        //        {
-        //        }
-        //    });
-        //    timer = 0.0f;
-        //}
-        //if(isPaused)
-        //{
-        //    pauseCnt += Time.deltaTime;
-        //}
-        //if(pauseCnt > 10.0f)
-        //{
-
-        //    RDConnection.Write.RemoveUpdate();
-        //}
     }
     
     public void OnApplicationQuit()
@@ -116,53 +86,69 @@ public class RealtimeUpdate : MonoBehaviour
         pauseCnt = 0.0f;
     }
 
-    void OnPlaceCharacters()
+    void ServerAysnInitialize()
     {
-        Debug.Log("OnPlaceCharacters");
-        RDConnection.Read.GetTownCharacters((task)=>
+        RDConnection.Listener.TownCharacterAddListener(HandleTownCharacterChildAdded);
+        //RDConnection.Read.GetTownCharacters((task) =>
+        //{
+        //    Debug.Log("OnPlaceCharacters111");
+        //    if (task.IsFaulted)
+        //    {
+        //        Debug.Log("OnPlaceCharacters Failed");
+        //    }
+        //    if (task.IsCompleted)
+        //    {
+        //        DataSnapshot snapshot = task.Result;
+        //        foreach (DataSnapshot characters in snapshot.Children)
+        //        {
+        //            OnPlaceCharacters(characters);
+        //        }
+        //        Debug.Log("OnPlaceCharacters222");
+        //    }
+        //});
+    }
+    public void HandleTownCharacterChildAdded(object sender, ChildChangedEventArgs args)
+    {
+        if (args.DatabaseError != null)
         {
+            Debug.LogError(args.DatabaseError.Message);
+            return;
+        }
+        // Do something with the data in args.Snapshot
 
-            Debug.Log("OnPlaceCharacters111");
-            if (task.IsFaulted)
+        Debug.Log("HandleChildAdded : " + args.Snapshot);
+
+        OnPlaceCharacters(args.Snapshot);
+    }
+    void OnPlaceCharacters(DataSnapshot dataSnapshot)
+    {
+        Vector3 pos = Vector3.zero;
+        string cid = "";
+        string uid = "";
+        string resourcePath = "";
+        foreach (DataSnapshot character in dataSnapshot.Children)
+        {
+            if (character.Key == "pos")
             {
-                Debug.Log("OnPlaceCharacters Failed");
-            }
-            if(task.IsCompleted)
-            {
-                DataSnapshot snapshot = task.Result;
-                foreach (DataSnapshot characters in snapshot.Children)
+                foreach (DataSnapshot p in character.Children)
                 {
-                    Vector3 pos = Vector3.zero;
-                    string cid = "";
-                    string uid = "";
-                    string resourcePath = "";
-                    foreach (DataSnapshot character in characters.Children)
-                    {
-                        if (character.Key == "pos")
-                        {
-                            foreach (DataSnapshot p in character.Children)
-                            {
-                                if (p.Key == "x") float.TryParse(p.Value.ToString(), out pos.x);
-                                if (p.Key == "y") float.TryParse(p.Value.ToString(), out pos.y);
-                                if (p.Key == "z") float.TryParse(p.Value.ToString(), out pos.z);
-                            }
-                        }
-                        if (character.Key == "cid") cid = character.Value.ToString();
-                        if (character.Key == "uid") uid = character.Value.ToString();
-                        if (character.Key == "ResourcePath") resourcePath = character.Value.ToString();
-                    }
-
-                    GameObject obj = Instantiate(Resources.Load("Character"), GameObject.Find("Users").transform) as GameObject;
-                    obj.transform.position = pos;
-                    obj.transform.Find("Canvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = cid;
-                    obj.AddComponent<CharacterMove>();
-                    obj.GetComponent<CharacterMove>().uid = uid;
-                    obj.GetComponent<CharacterMove>().cid = cid;
-                    GameObject obj1 = Instantiate(Resources.Load(resourcePath), obj.transform) as GameObject;
-                    //obj1.AddComponent<CharacterMove>();
+                    if (p.Key == "x") float.TryParse(p.Value.ToString(), out pos.x);
+                    if (p.Key == "y") float.TryParse(p.Value.ToString(), out pos.y);
+                    if (p.Key == "z") float.TryParse(p.Value.ToString(), out pos.z);
                 }
-                Debug.Log("OnPlaceCharacters222");
             }
-        });
+            if (character.Key == "cid") cid = character.Value.ToString();
+            if (character.Key == "uid") uid = character.Value.ToString();
+            if (character.Key == "ResourcePath") resourcePath = character.Value.ToString();
+        }
+
+        GameObject obj = Instantiate(Resources.Load("Character"), GameObject.Find("Users").transform) as GameObject;
+        obj.transform.position = pos;
+        obj.transform.Find("Canvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = cid;
+        obj.AddComponent<CharacterMove>();
+        obj.GetComponent<CharacterMove>().uid = uid;
+        obj.GetComponent<CharacterMove>().cid = cid;
+        GameObject obj1 = Instantiate(Resources.Load(resourcePath), obj.transform) as GameObject;
+        //obj1.AddComponent<CharacterMove>();
     }
 }
