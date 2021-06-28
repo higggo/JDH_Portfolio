@@ -18,6 +18,7 @@ public class PathFinding : MonoBehaviour
     public Vector3 nextDest;
 
     public CharacterEventHandler handler;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -81,6 +82,7 @@ public class PathFinding : MonoBehaviour
 
             }
             dist -= delta;
+            GetComponent<CharacterStat>().Speed = delta / Time.deltaTime;
             //this.transform.rotation = Quaternion.Slerp(Quaternion.Euler(this.transform.forward), Quaternion.Euler(dir), Time.deltaTime * rotspeed);
 
             //this.transform.position += Vector3.Lerp(Vector3.zero, dir * delta, Time.deltaTime);

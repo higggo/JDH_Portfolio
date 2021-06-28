@@ -7,6 +7,7 @@ using Firebase.Auth;
 
 public class CharacterMove : MonoBehaviour
 {
+    CharacterStat Status;
     PathFinding MovePath;
     CharacterEventHandler handler;
     DatabaseReference reference;
@@ -19,6 +20,7 @@ public class CharacterMove : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Status = gameObject.AddComponent<CharacterStat>();
         MovePath = gameObject.AddComponent<PathFinding>();
         handler = gameObject.AddComponent<CharacterEventHandler>();
         // Get the root reference location of the database.
