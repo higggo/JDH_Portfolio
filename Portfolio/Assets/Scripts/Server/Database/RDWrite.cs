@@ -9,7 +9,7 @@ public class RDWrite : RDReference
 {
     public void UpdateCharacterLocation(Dictionary<string, object> dictionary, Callback callback)
     {
-        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child("Town").Child(FAuth.CurrentUser.UserId).
+        reference.Child("users").Child("Town").Child(FAuth.CurrentUser.UserId).
             UpdateChildrenAsync(dictionary).ContinueWith(task =>
         {
             //
@@ -17,15 +17,18 @@ public class RDWrite : RDReference
             UnityMainThread.wkr.AddJob(()=> { callback(task);});
         });
     }
-    public void RemoveUpdate()
+    public void RemoveCharacter()
     {
-        FirebaseDatabase.DefaultInstance.RootReference.Child("users/Town").Child(FAuth.CurrentUser.UserId).RemoveValueAsync();
+        reference.Child("users").Child("Town").Child(FAuth.CurrentUser.UserId).RemoveValueAsync();
     }
-
+    public void RemoveDestination()
+    {
+        reference.Child("Destination").Child(FAuth.CurrentUser.UserId).Child(FAuth.CID).RemoveValueAsync();
+    }
     public void Test(Dictionary<string, object> dictionary, Callback callback)
     {
 
-        FirebaseDatabase.DefaultInstance.RootReference.Child("Test").UpdateChildrenAsync(dictionary).ContinueWith(task =>
+        reference.Child("Test").UpdateChildrenAsync(dictionary).ContinueWith(task =>
             {
                 UnityMainThread.wkr.AddJob(() => { callback(task);});
             });

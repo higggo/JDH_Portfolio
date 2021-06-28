@@ -801,6 +801,7 @@ MonoBehaviour:
   ClickMask:
     serializedVersion: 2
     m_Bits: 288
+  sendID: higggo
 --- !u!114 &1485654614
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -55,6 +55,7 @@ public class CreateCharacters : MonoBehaviour
         //FileInfo[] info = dir.GetFiles("*.prefab");
 
         List<string> BasicCharacters = new List<string>();
+        BasicCharacters.Add("Archer");
         BasicCharacters.Add("BowHitman");
         BasicCharacters.Add("BowHunter");
         foreach (string str in BasicCharacters)

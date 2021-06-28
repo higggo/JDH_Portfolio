@@ -16,8 +16,10 @@ public class RealtimeUpdate : MonoBehaviour
     float pauseCnt = 0.0f;
     //float timer = 0.0f;
     //float timer1 = 0.0f;
-
+    DatabaseReference reference;
     public LayerMask ClickMask;
+    public string sendID = "higggo";
+    GameObject users;
     private void Start()
     {
 #if UNITY_ANDROID
@@ -28,7 +30,7 @@ public class RealtimeUpdate : MonoBehaviour
             startService();
         }
 #endif
-
+        users = GameObject.Find("Users");
         ClickMask = 1 << 8;
         ServerAysnInitialize();
     }
@@ -73,39 +75,46 @@ public class RealtimeUpdate : MonoBehaviour
     
     public void OnApplicationQuit()
     {
-        RDConnection.Write.RemoveUpdate();
+        RDConnection.Write.RemoveCharacter();
+        RDConnection.Write.RemoveDestination();
+        reference.ChildAdded -= HandleTownCharacterChildAdded;
+        reference.ChildRemoved -= HandleTownCharacterChildRemoved;
+        foreach (GameObject c in users.transform)
+        {
+            c.GetComponent<CharacterMove>().RemoveListener();
+        }
     }
     void OnApplicationFocus(bool hasFocus)
     {
+        foreach(GameObject c in users.transform)
+        {
+            c.GetComponent<CharacterMove>().RemoveListener();
+        }
+        reference.ChildAdded += HandleTownCharacterChildAdded;
+        reference.ChildRemoved += HandleTownCharacterChildRemoved;
         isPaused = !hasFocus;
     }
 
     void OnApplicationPause(bool pauseStatus)
     {
+        foreach (GameObject c in users.transform)
+        {
+            c.GetComponent<CharacterMove>().AddListener();
+        }
+        reference.ChildAdded -= HandleTownCharacterChildAdded;
+        reference.ChildRemoved -= HandleTownCharacterChildRemoved;
         isPaused = pauseStatus;
         pauseCnt = 0.0f;
     }
 
     void ServerAysnInitialize()
     {
-        RDConnection.Listener.TownCharacterAddListener(HandleTownCharacterChildAdded);
-        //RDConnection.Read.GetTownCharacters((task) =>
-        //{
-        //    Debug.Log("OnPlaceCharacters111");
-        //    if (task.IsFaulted)
-        //    {
-        //        Debug.Log("OnPlaceCharacters Failed");
-        //    }
-        //    if (task.IsCompleted)
-        //    {
-        //        DataSnapshot snapshot = task.Result;
-        //        foreach (DataSnapshot characters in snapshot.Children)
-        //        {
-        //            OnPlaceCharacters(characters);
-        //        }
-        //        Debug.Log("OnPlaceCharacters222");
-        //    }
-        //});
+        //RDConnection.Listener.TownCharacterAddListener(HandleTownCharacterChildAdded);
+        //RDConnection.Listener.TownCharacterRemoveListener(HandleTownCharacterChildRemoved);
+
+        reference = FirebaseDatabase.DefaultInstance.GetReference("users/Town");
+        reference.ChildAdded += HandleTownCharacterChildAdded;
+        reference.ChildRemoved += HandleTownCharacterChildRemoved;
     }
     public void HandleTownCharacterChildAdded(object sender, ChildChangedEventArgs args)
     {
@@ -119,6 +128,32 @@ public class RealtimeUpdate : MonoBehaviour
         Debug.Log("HandleChildAdded : " + args.Snapshot);
 
         OnPlaceCharacters(args.Snapshot);
+    }
+    public void HandleTownCharacterChildRemoved(object sender, ChildChangedEventArgs args)
+    {
+        if (args.DatabaseError != null)
+        {
+            Debug.LogError(args.DatabaseError.Message);
+            return;
+        }
+        // Do something with the data in args.Snapshot
+
+        Debug.Log("HandleChildAdded : " + args.Snapshot);
+
+        RemoveCharacters(args.Snapshot);
+    }
+    void RemoveCharacters(DataSnapshot dataSnapshot)
+    {
+        string cid = "";
+        string uid = "";
+        foreach (DataSnapshot character in dataSnapshot.Children)
+        {
+            if (character.Key == "cid") cid = character.Value.ToString();
+            if (character.Key == "uid") uid = character.Value.ToString();
+        }
+        GameObject obj = GameObject.Find(cid);
+        obj.GetComponent<CharacterMove>().RemoveListener();
+        Destroy(obj);
     }
     void OnPlaceCharacters(DataSnapshot dataSnapshot)
     {
@@ -148,7 +183,7 @@ public class RealtimeUpdate : MonoBehaviour
         obj.AddComponent<CharacterMove>();
         obj.GetComponent<CharacterMove>().uid = uid;
         obj.GetComponent<CharacterMove>().cid = cid;
+        obj.name = cid;
         GameObject obj1 = Instantiate(Resources.Load(resourcePath), obj.transform) as GameObject;
-        //obj1.AddComponent<CharacterMove>();
     }
 }

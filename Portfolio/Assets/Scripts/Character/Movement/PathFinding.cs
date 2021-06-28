@@ -17,23 +17,13 @@ public class PathFinding : MonoBehaviour
 
     public Vector3 nextDest;
 
-    CharacterEventHandler handler;
+    public CharacterEventHandler handler;
     // Start is called before the first frame update
     void Start()
     {
         handler = GetComponent<CharacterEventHandler>();
         handler.OnDestReceive += MoveTo;
         path = new NavMeshPath();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        for (int i = 0; i < path.corners.Length - 1; i++)
-        {
-            Debug.DrawLine(path.corners[i], path.corners[i + 1], Color.red);
-        }
     }
 
     public void MoveTo()

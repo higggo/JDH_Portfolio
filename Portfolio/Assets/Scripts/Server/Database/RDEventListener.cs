@@ -1,4 +1,5 @@
 ﻿using Firebase.Database;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,14 +8,29 @@ public class RDEventListener : RDReference
 {
     public void TownCharacterAddListener(System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)
     {
-        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child("Town").ChildAdded += handle;
+        reference.Child("users").Child("Town").ChildAdded += handle;
+    }
+    public void TownCharacterRemoveListener(System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)
+    {
+        reference.Child("users").Child("Town").ChildRemoved += handle;
     }
 
-    public void CharacterDestinationAddListener(string uid, string cid, System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)
+    public void CharacterDestinationAddListener(ref DatabaseReference reference, System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)
     {
-        FirebaseDatabase.DefaultInstance.RootReference.Child("Destination").Child(uid).Child(cid).LimitToLast(1).ChildAdded += handle;
-        
+        reference.LimitToLast(1).ChildAdded += handle;
+
     }
+    public void CharacterDestinationRemoveListener(ref DatabaseReference reference, System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)
+    {
+        if (reference != null)
+        {
+            reference.LimitToLast(1).ChildAdded -= handle;
+            reference = null;
+
+            Debug.Log("Remove");
+        }
+    }
+
     void HandleCharacterDestinationChildAdded(object sender, ChildChangedEventArgs args)
     {
         if (args.DatabaseError != null)
