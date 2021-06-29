@@ -48,6 +48,10 @@ public class Archer : MonoBehaviour
         switch (myState)
         {
             case STATE.NORMAL:
+                if(GetComponent<CharacterStat>().Speed > 0.0f)
+                {
+                    ChangeState(STATE.ROAMING);
+                }
                 break;
             case STATE.LOOKAROUND:
                 LookAroundTime += Time.deltaTime;
@@ -55,9 +59,18 @@ public class Archer : MonoBehaviour
                 {
                     ChangeState(STATE.NORMAL);
                 }
+
+                if (GetComponent<CharacterStat>().Speed > 0.0f)
+                {
+                    ChangeState(STATE.ROAMING);
+                }
                 break;
             case STATE.ROAMING:
                 Anim.SetFloat("Speed", gameObject.GetComponentInParent<CharacterStat>().Speed);
+                if (GetComponent<CharacterStat>().Speed <= 0.0f)
+                {
+                    ChangeState(STATE.LOOKAROUND);
+                }
                 break;
             case STATE.BATTLE:
                 break;

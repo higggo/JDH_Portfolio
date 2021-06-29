@@ -34,13 +34,17 @@ public class CharacterMove : MonoBehaviour
 
     public void AddListener()
     {
-        reference = FirebaseDatabase.DefaultInstance.GetReference("Destination/" + uid + "/" + cid);
-        reference.ChildAdded += GetComponent<CharacterEventHandler>().HandleCharacterDestinationChildAdded;
+        if(reference == null)
+        {
+            reference = FirebaseDatabase.DefaultInstance.GetReference("Destination/" + uid + "/" + cid);
+            reference.ChildAdded += GetComponent<CharacterEventHandler>().HandleCharacterDestinationChildAdded;
+        }
     }
     public void RemoveListener()
     {
-        GetComponent<PathFinding>().handler.OnDestReceive -= GetComponent<PathFinding>().MoveTo;
+       // GetComponent<PathFinding>().handler.OnDestReceive -= GetComponent<PathFinding>().MoveTo;
         reference.ChildAdded -= GetComponent<CharacterEventHandler>().HandleCharacterDestinationChildAdded;
+        reference = null;
     }
 
     void HandleValueChanged(object sender, ValueChangedEventArgs args)

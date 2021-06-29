@@ -79,30 +79,33 @@ public class RealtimeUpdate : MonoBehaviour
         RDConnection.Write.RemoveDestination();
         reference.ChildAdded -= HandleTownCharacterChildAdded;
         reference.ChildRemoved -= HandleTownCharacterChildRemoved;
-        foreach (GameObject c in users.transform)
+        foreach (Transform c in users.transform)
         {
             c.GetComponent<CharacterMove>().RemoveListener();
         }
     }
     void OnApplicationFocus(bool hasFocus)
     {
-        foreach(GameObject c in users.transform)
-        {
-            c.GetComponent<CharacterMove>().RemoveListener();
-        }
-        reference.ChildAdded += HandleTownCharacterChildAdded;
-        reference.ChildRemoved += HandleTownCharacterChildRemoved;
-        isPaused = !hasFocus;
-    }
-
-    void OnApplicationPause(bool pauseStatus)
-    {
-        foreach (GameObject c in users.transform)
+        foreach(Transform c in users.transform)
         {
             c.GetComponent<CharacterMove>().AddListener();
         }
+        if(reference == null)
+        {
+            reference.ChildAdded += HandleTownCharacterChildAdded;
+            reference.ChildRemoved += HandleTownCharacterChildRemoved;
+        }
+        isPaused = !hasFocus;
+    }
+    void OnApplicationPause(bool pauseStatus)
+    {
+        foreach (Transform c in users.transform)
+        {
+            c.GetComponent<CharacterMove>().RemoveListener();
+        }
         reference.ChildAdded -= HandleTownCharacterChildAdded;
         reference.ChildRemoved -= HandleTownCharacterChildRemoved;
+        reference = null;
         isPaused = pauseStatus;
         pauseCnt = 0.0f;
     }
@@ -180,10 +183,10 @@ public class RealtimeUpdate : MonoBehaviour
         GameObject obj = Instantiate(Resources.Load("Character"), GameObject.Find("Users").transform) as GameObject;
         obj.transform.position = pos;
         obj.transform.Find("Canvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = cid;
-        obj.AddComponent<CharacterMove>();
-        obj.GetComponent<CharacterMove>().uid = uid;
-        obj.GetComponent<CharacterMove>().cid = cid;
         obj.name = cid;
-        GameObject obj1 = Instantiate(Resources.Load(resourcePath), obj.transform) as GameObject;
+        GameObject animCharacter = Instantiate(Resources.Load(resourcePath), obj.transform) as GameObject;
+        animCharacter.AddComponent<CharacterMove>();
+        animCharacter.GetComponent<CharacterMove>().uid = uid;
+        animCharacter.GetComponent<CharacterMove>().cid = cid;
     }
 }

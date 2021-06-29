@@ -60,7 +60,18 @@ public class Signin : MonoBehaviour
                     }
                 }
             };
-            UnityMainThread.wkr.AddJob(() => { GameObject.Find("TestText").GetComponent<TMPro.TextMeshProUGUI>().text = s;});
+
+            UnityMainThread.wkr.AddJob(() => {
+                if(task.IsCompleted)
+                {
+                    //GameObject.Find("TestText").GetComponent<TMPro.TextMeshProUGUI>().text = s;
+                    GameObject.Find("TestText").GetComponent<TMPro.TextMeshProUGUI>().text = "Server Connect Success";
+                }
+                else
+                {
+                    GameObject.Find("TestText").GetComponent<TMPro.TextMeshProUGUI>().text = "Server Connect Failed";
+                }
+            });
 
         });
     }
