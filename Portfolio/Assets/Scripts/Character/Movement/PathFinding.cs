@@ -70,6 +70,7 @@ public class PathFinding : MonoBehaviour
                 if (curpos == path.corners.Length)
                 {
                     this.transform.Translate(dir * delta, Space.World);
+                    GetComponent<CharacterStat>().Speed = 0.0f;
                     continue;
                 }
                 target = path.corners[curpos];
