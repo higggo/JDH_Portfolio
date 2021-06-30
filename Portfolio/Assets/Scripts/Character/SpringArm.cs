@@ -94,7 +94,7 @@ public class SpringArm : MonoBehaviour
         else
         {
             // Smooth Rotating
-            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.Euler(TargetRot), Time.smoothDeltaTime * RotSmoothspeed);
+            //this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.Euler(TargetRot), Time.smoothDeltaTime * RotSmoothspeed);
         }
 
 

@@ -56,9 +56,9 @@ MonoBehaviour:
   TargetDist: 0
   CurDist: 0
   CollisionOffset: 1
-  LookUpArea: {x: 0, y: 100}
+  LookUpArea: {x: 0, y: 0}
   ZoomArea: {x: 0, y: 0}
-  ControllerRotate: 1
+  ControllerRotate: 0
 --- !u!1 &4859439629275637959
 GameObject:
   m_ObjectHideFlags: 0
