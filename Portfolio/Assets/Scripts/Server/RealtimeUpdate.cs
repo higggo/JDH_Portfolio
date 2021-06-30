@@ -164,29 +164,31 @@ public class RealtimeUpdate : MonoBehaviour
         string cid = "";
         string uid = "";
         string resourcePath = "";
-        foreach (DataSnapshot character in dataSnapshot.Children)
+        foreach (DataSnapshot characterData in dataSnapshot.Children)
         {
-            if (character.Key == "pos")
+            if (characterData.Key == "pos")
             {
-                foreach (DataSnapshot p in character.Children)
+                foreach (DataSnapshot p in characterData.Children)
                 {
                     if (p.Key == "x") float.TryParse(p.Value.ToString(), out pos.x);
                     if (p.Key == "y") float.TryParse(p.Value.ToString(), out pos.y);
                     if (p.Key == "z") float.TryParse(p.Value.ToString(), out pos.z);
                 }
             }
-            if (character.Key == "cid") cid = character.Value.ToString();
-            if (character.Key == "uid") uid = character.Value.ToString();
-            if (character.Key == "ResourcePath") resourcePath = character.Value.ToString();
+            if (characterData.Key == "cid") cid = characterData.Value.ToString();
+            if (characterData.Key == "uid") uid = characterData.Value.ToString();
+            if (characterData.Key == "ResourcePath") resourcePath = "PlayCharacter/" + characterData.Value.ToString();
         }
 
-        GameObject obj = Instantiate(Resources.Load("Character"), GameObject.Find("Users").transform) as GameObject;
-        obj.transform.position = pos;
-        obj.transform.Find("Canvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = cid;
-        obj.name = cid;
-        GameObject animCharacter = Instantiate(Resources.Load(resourcePath), obj.transform) as GameObject;
-        animCharacter.AddComponent<CharacterMove>();
-        animCharacter.GetComponent<CharacterMove>().uid = uid;
-        animCharacter.GetComponent<CharacterMove>().cid = cid;
+        GameObject character = Instantiate(Resources.Load(resourcePath), GameObject.Find("Users").transform) as GameObject;
+        character.transform.position = pos; 
+        character.name = cid;
+        character.GetComponent<CharacterMove>().uid = uid;
+        character.GetComponent<CharacterMove>().cid = cid;
+        character.transform.Find("CharacterCanvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = cid;
+
+        //GameObject canvas = Instantiate(Resources.Load("CharacterCanvas"), character.transform) as GameObject;
+        //canvas.name = "Canvas";
+        //canvas.transform.Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = cid;
     }
 }

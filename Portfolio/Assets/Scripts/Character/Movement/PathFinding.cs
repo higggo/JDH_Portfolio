@@ -39,7 +39,7 @@ public class PathFinding : MonoBehaviour
 
     IEnumerator Moving(NavMeshPath path)
     {
-        float movespeed = 7.0f;
+        float movespeed = GetComponent<CharacterStat>().MaxSpeed;
         int curpos = 1;
         Vector3 target = path.corners[curpos];
         Vector3 dir = target - this.transform.position;
@@ -70,7 +70,7 @@ public class PathFinding : MonoBehaviour
                 if (curpos == path.corners.Length)
                 {
                     this.transform.Translate(dir * delta, Space.World);
-                    GetComponent<CharacterStat>().Speed = 0.0f;
+                    GetComponent<CharacterStat>().CurrentSpeed = 0.0f;
                     continue;
                 }
                 target = path.corners[curpos];
@@ -83,11 +83,11 @@ public class PathFinding : MonoBehaviour
 
             }
             dist -= delta;
-            GetComponent<CharacterStat>().Speed = delta / Time.deltaTime;
+            GetComponent<CharacterStat>().CurrentSpeed = delta / Time.deltaTime;
             //this.transform.rotation = Quaternion.Slerp(Quaternion.Euler(this.transform.forward), Quaternion.Euler(dir), Time.deltaTime * rotspeed);
 
             //this.transform.position += Vector3.Lerp(Vector3.zero, dir * delta, Time.deltaTime);
-            this.transform.position += dir * delta;
+            this.transform.localPosition += dir * delta;
             //this.transform.Translate(
             //    Vector3.Lerp(Vector3.zero, dir * delta, Time.deltaTime)
             //    ,

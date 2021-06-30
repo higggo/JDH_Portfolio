@@ -32,7 +32,7 @@ public class CreateCharacters : MonoBehaviour
     // Camera
     Camera mainCamera;
     Vector3 CameraCollectionPos = new Vector3(6.86f, 1.49f, 2.68f);
-    Vector3 CameraCreatePos = new Vector3(0.23f, 1.49f, 1.57f);
+    Vector3 CameraCreatePos = new Vector3(-0.120f, 1.49f, 1.57f);
 
     int selectNum = 0;
     bool identifyActive = false;
@@ -60,11 +60,11 @@ public class CreateCharacters : MonoBehaviour
         BasicCharacters.Add("BowHunter");
         foreach (string str in BasicCharacters)
         {
-            CreateCharacterInfo c = new CreateCharacterInfo();
-            c.Character = Instantiate(Resources.Load("BasicCharacters/"+str), CollectionPool) as GameObject;
-            c.Character.SetActive(false);
-            c.path = "BasicCharacters/" + str;
-            CollectionCharacters.Add(c);
+            CreateCharacterInfo collection = new CreateCharacterInfo();
+            collection.Character = Instantiate(Resources.Load("SlotCharacter/"+str), CollectionPool) as GameObject;
+            collection.Character.SetActive(false);
+            collection.path = str;
+            CollectionCharacters.Add(collection);
         }
         CollectionCharacters[selectNum].Character.SetActive(true);
 
@@ -203,22 +203,22 @@ public class CreateCharacters : MonoBehaviour
         {
             Dictionary<string, object> info = documentSnapshot.ToDictionary();
 
-            CreateCharacterInfo c = new CreateCharacterInfo();
+            CreateCharacterInfo myCharacter = new CreateCharacterInfo();
             foreach (KeyValuePair<string, object> pair in info)
             {
                 if (pair.Key == "ResourcePath")
                 {
-                    c.path = pair.Value.ToString();
+                    myCharacter.path = pair.Value.ToString();
                 }
                 if (pair.Key == "cid")
                 {
-                    c.cid = pair.Value.ToString();
+                    myCharacter.cid = pair.Value.ToString();
                 }
             }
             Transform slot = GetSlot();
-            GameObject obj = Instantiate(Resources.Load("Character"), slot) as GameObject;
-            obj.transform.Find("Canvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = c.cid;
-            Instantiate(Resources.Load(c.path), obj.transform);
+            GameObject slotCharacter = Instantiate(Resources.Load("SlotCharacter/" + myCharacter.path), slot) as GameObject;
+            GameObject canvas = Instantiate(Resources.Load("CharacterCanvas"), slotCharacter.transform) as GameObject;
+            canvas.transform.Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = myCharacter.cid;
 
             GetSelectButton(slot).onClick.AddListener(() => {
                 RDConnection.Write.UpdateCharacterLocation(info, (res) => {
@@ -229,7 +229,7 @@ public class CreateCharacters : MonoBehaviour
                     }
                     else if (res.IsCompleted)
                     {
-                        FAuth.CID = c.cid;
+                        FAuth.CID = myCharacter.cid;
                         FieldScene();
                     }
                 });

@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class CharacterStat : MonoBehaviour
 {
-    public float Speed = 0.0f;
+    public float CurrentSpeed = 0.0f;
+    public float MaxSpeed = 0.0f;
 }
