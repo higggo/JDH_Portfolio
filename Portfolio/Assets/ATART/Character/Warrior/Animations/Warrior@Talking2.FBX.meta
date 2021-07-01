@@ -11,12 +11,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: PlayerMale01
-    second: {fileID: 2100000, guid: cf25ba8e4785ec54c8cb131044ad0cb2, type: 2}
+    second: {fileID: 2100000, guid: 5f343e99fa3df0940ac7433fc069f322, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: PlayerMale02
-    second: {fileID: 2100000, guid: 0fab256eb2def0b41904806b25b0eb3a, type: 2}
+    second: {fileID: 2100000, guid: 7a7c89712c975b747a8078ef2f223970, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -202,19 +202,10 @@ ModelImporter:
           L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Hand_WeaponBone
         weight: 1
       - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001
-          L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Hand_WeaponBone/BoneBow01
+          L UpperArm/Bip001 L Shoulder
         weight: 1
       - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001
-          L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Hand_WeaponBone/BoneBow02
-        weight: 1
-      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001
-          L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Hand_WeaponBone/BoneBow03
-        weight: 1
-      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001
-          L UpperArm/Bip001 L UpperArm Twist01
-        weight: 1
-      - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001
-          L UpperArm/Bip001 L UpperArm Twist02
+          L UpperArm/Bip001 L UpperArm Twist
         weight: 1
       - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck
         weight: 1
@@ -309,16 +300,16 @@ ModelImporter:
           R UpperArm/Bip001 R Forearm/Bip001 R Hand/Bip001 R Hand_WeaponBone
         weight: 1
       - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001
-          R UpperArm/Bip001 R UpperArm Twist01
+          R UpperArm/Bip001 R Shoulder
         weight: 1
       - path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001
-          R UpperArm/Bip001 R UpperArm Twist02
+          R UpperArm/Bip001 R UpperArm_Twist
         weight: 1
-      - path: Mesh01
+      - path: Warrior_Body
         weight: 0
-      - path: MeshArrow
+      - path: Warrior_Face
         weight: 0
-      - path: MeshBow
+      - path: Warrior_Hair
         weight: 0
       maskType: 1
       maskSource: {fileID: 31900000, guid: 327bf1a56dc5a884db4566a8787598f3, type: 2}

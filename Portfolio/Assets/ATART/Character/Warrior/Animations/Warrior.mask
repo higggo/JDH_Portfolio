@@ -141,19 +141,10 @@ AvatarMask:
       L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Hand_WeaponBone
     m_Weight: 1
   - m_Path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001
-      L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Hand_WeaponBone/BoneBow01
+      L UpperArm/Bip001 L Shoulder
     m_Weight: 1
   - m_Path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001
-      L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Hand_WeaponBone/BoneBow02
-    m_Weight: 1
-  - m_Path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001
-      L UpperArm/Bip001 L Forearm/Bip001 L Hand/Bip001 L Hand_WeaponBone/BoneBow03
-    m_Weight: 1
-  - m_Path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001
-      L UpperArm/Bip001 L UpperArm Twist01
-    m_Weight: 1
-  - m_Path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001
-      L UpperArm/Bip001 L UpperArm Twist02
+      L UpperArm/Bip001 L UpperArm Twist
     m_Weight: 1
   - m_Path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck
     m_Weight: 1
@@ -248,14 +239,14 @@ AvatarMask:
       R UpperArm/Bip001 R Forearm/Bip001 R Hand/Bip001 R Hand_WeaponBone
     m_Weight: 1
   - m_Path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001
-      R UpperArm/Bip001 R UpperArm Twist01
+      R UpperArm/Bip001 R Shoulder
     m_Weight: 1
   - m_Path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001
-      R UpperArm/Bip001 R UpperArm Twist02
+      R UpperArm/Bip001 R UpperArm_Twist
     m_Weight: 1
-  - m_Path: Mesh01
+  - m_Path: Warrior_Body
     m_Weight: 0
-  - m_Path: MeshArrow
+  - m_Path: Warrior_Face
     m_Weight: 0
-  - m_Path: MeshBow
+  - m_Path: Warrior_Hair
     m_Weight: 0
