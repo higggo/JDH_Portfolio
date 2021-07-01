@@ -25,7 +25,7 @@ public class SpringArm : MonoBehaviour
     private void Awake()
     {
         // Update와 Start중에 뭐가 먼저 실행될지 알 수 없다. 그래서 Awake문에서 실행
-        myCam = Camera.main.transform;
+        //myCam = Camera.main.transform;
         myCam.position = this.transform.position + (-this.transform.forward * ZoomArea.y);
         //TargetDist = Mathf.Clamp(TargetDist, ZoomArea.x, ZoomArea.y);
         CurDist = TargetDist = Vector3.Distance(this.transform.position, myCam.position);
