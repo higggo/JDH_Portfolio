@@ -191,16 +191,7 @@ public class RealtimeUpdate : MonoBehaviour
             Debug.Log("Camera Change");
             character.transform.Find("SpringArm").Find("PlayerCamera").gameObject.SetActive(true);
             GameObject.FindGameObjectWithTag("MainCamera").SetActive(false);
-            //GameObject.Find("TEST").SetActive(false);
-            //GameObject.Find("PlayerCamera").SetActive(true);
-            //GameObject.Find("FieldCamera").SetActive(false);
-            //Camera pcamera = GameObject.Find("PlayerCamera").GetComponent<Camera>();
-            //pcamera.gameObject.SetActive(true);
-            //Camera fcamera = GameObject.Find("FieldCamera").GetComponent<Camera>();
-            //fcamera.gameObject.SetActive(false);
+            Billboard.I.SetMainCamera();
         }
-        //GameObject canvas = Instantiate(Resources.Load("CharacterCanvas"), character.transform) as GameObject;
-        //canvas.name = "Canvas";
-        //canvas.transform.Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = cid;
     }
 }
