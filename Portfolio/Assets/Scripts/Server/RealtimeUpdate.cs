@@ -18,10 +18,12 @@ public class RealtimeUpdate : MonoBehaviour
     //float timer1 = 0.0f;
     DatabaseReference reference;
     public LayerMask ClickMask;
-    public string sendID = "higggo";
+    //public string sendID = "higggo";
     GameObject users;
+    GameObject myCharacter = null;
     private void Start()
     {
+        StartCoroutine(UpdatePosServer());
 #if UNITY_ANDROID
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -129,7 +131,9 @@ public class RealtimeUpdate : MonoBehaviour
         // Do something with the data in args.Snapshot
 
         Debug.Log("HandleChildAdded : " + args.Snapshot);
-        UnityMainThread.wkr.AddJob(() => { OnPlaceCharacters(args.Snapshot); });
+        UnityMainThread.wkr.AddJob(() => {
+            OnPlaceCharacters(args.Snapshot);
+        });
         //OnPlaceCharacters(args.Snapshot);
     }
     public void HandleTownCharacterChildRemoved(object sender, ChildChangedEventArgs args)
@@ -160,6 +164,7 @@ public class RealtimeUpdate : MonoBehaviour
     }
     void OnPlaceCharacters(DataSnapshot dataSnapshot)
     {
+        Debug.Log("OnPlaceCharacters");
         Vector3 pos = Vector3.zero;
         string cid = "";
         string uid = "";
@@ -186,12 +191,32 @@ public class RealtimeUpdate : MonoBehaviour
         character.GetComponent<CharacterMove>().uid = uid;
         character.GetComponent<CharacterMove>().cid = cid;
         character.transform.Find("CharacterCanvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = cid;
-        if(uid == FAuth.CurrentUser.UserId)
+        character.transform.Find("CharacterCanvas").GetComponent<Billboard>().cam = Camera.main.transform;
+        if (uid == FAuth.CurrentUser.UserId)
         {
             Debug.Log("Camera Change");
+            myCharacter = character;
             character.transform.Find("SpringArm").Find("PlayerCamera").gameObject.SetActive(true);
             GameObject.FindGameObjectWithTag("MainCamera").SetActive(false);
-            Billboard.I.SetMainCamera();
+            //Billboard.I.SetMainCamera();
+        }
+    }
+    IEnumerator UpdatePosServer()
+    {
+        while(true)
+        {
+            if(myCharacter != null)
+            {
+                Dictionary<string, object> childUpdates = new Dictionary<string, object>();
+                childUpdates["users/Town/" + FAuth.CurrentUser.UserId + "/pos/x"] = myCharacter.transform.position.x;
+                childUpdates["users/Town/" + FAuth.CurrentUser.UserId + "/pos/y"] = myCharacter.transform.position.y;
+                childUpdates["users/Town/" + FAuth.CurrentUser.UserId + "/pos/z"] = myCharacter.transform.position.z;
+                FirebaseDatabase.DefaultInstance.RootReference.UpdateChildrenAsync(childUpdates).ContinueWith(task =>
+                {
+                    //UnityMainThread.wkr.AddJob(() => { });
+                });
+            }
+            yield return new WaitForSeconds(1);
         }
     }
 }

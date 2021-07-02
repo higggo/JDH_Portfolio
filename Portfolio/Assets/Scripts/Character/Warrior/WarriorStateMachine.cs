@@ -26,6 +26,25 @@ public class WarriorStateMachine : MonoBehaviour
     public void ChangeState(STATE s)
     {
         if (myState == s) return;
+
+        // Out
+        switch (myState)
+        {
+            case STATE.NORMAL:
+                Anim.SetTrigger("UnSheathe");
+                break;
+            case STATE.LOOKAROUND:
+                LookAroundTime = 0.0f;
+                break;
+            case STATE.ROAMING:
+                break;
+            case STATE.BATTLE:
+                break;
+            case STATE.ESCAPE:
+                break;
+        }
+
+        // In
         myState = s;
         switch (myState)
         {
@@ -35,6 +54,7 @@ public class WarriorStateMachine : MonoBehaviour
                 LookAroundTime = 0.0f;
                 break;
             case STATE.ROAMING:
+                //Anim.SetTrigger("UnSheathe");
                 break;
             case STATE.BATTLE:
                 break;

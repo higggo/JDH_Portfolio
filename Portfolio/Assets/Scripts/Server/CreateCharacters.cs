@@ -57,6 +57,7 @@ public class CreateCharacters : MonoBehaviour
         List<string> BasicCharacters = new List<string>();
         BasicCharacters.Add("Archer");
         BasicCharacters.Add("Warrior");
+        BasicCharacters.Add("Wizard");
         foreach (string str in BasicCharacters)
         {
             CreateCharacterInfo collection = new CreateCharacterInfo();
