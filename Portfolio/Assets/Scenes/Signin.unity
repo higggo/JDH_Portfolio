@@ -44,7 +44,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -4417,72 +4417,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7cc292eefdd124ea1ae05628233f42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &7393403557376215561
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.120483555
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -4.9740868
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 19.988483
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693072, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393403558368693086, guid: 046ef980296abe145a475db4cc13fd8d,
-        type: 3}
-      propertyPath: m_Name
-      value: Billboard
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 046ef980296abe145a475db4cc13fd8d, type: 3}
