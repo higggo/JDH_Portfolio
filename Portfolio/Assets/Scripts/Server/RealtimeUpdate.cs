@@ -77,6 +77,7 @@ public class RealtimeUpdate : MonoBehaviour
     
     public void OnApplicationQuit()
     {
+        myCharacter = null;
         RDConnection.Write.RemoveCharacter();
         RDConnection.Write.RemoveDestination();
         reference.ChildAdded -= HandleTownCharacterChildAdded;
