@@ -21,8 +21,7 @@ public class Monster : MonoBehaviour
     public MonsterRangeSystem RangeSys = null;
 
     DatabaseReference reference;
-
-    void Start()
+    private void Awake()
     {
         AnimEvent = this.GetComponent<MonsterAnimEvent>();
         EventHandler = this.GetComponent<MonsterEventHandler>();
@@ -31,6 +30,11 @@ public class Monster : MonoBehaviour
         NavMeshAgent = this.GetComponent<NavMeshAgent>();
         Animator = this.GetComponent<Animator>();
         RangeSys = this.GetComponent<MonsterRangeSystem>();
+
+    }
+    void Start()
+    {
+        AddListener();
     }
 
     // Update is called once per frame
