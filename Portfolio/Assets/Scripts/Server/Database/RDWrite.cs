@@ -36,12 +36,25 @@ public class RDWrite : RDReference
 
     public void UpdateCharacterDestination(Vector3 dest, Callback callback)
     {
-        string key = FirebaseDatabase.DefaultInstance.RootReference.Child("Destination").Child("Destination").Push().Key;
+        string key = FirebaseDatabase.DefaultInstance.RootReference.Push().Key;
 
         Dictionary<string, object> childUpdates = new Dictionary<string, object>();
         childUpdates["Destination/" + FAuth.CurrentUser.UserId + "/" + FAuth.CID + "/" + key + "/pos/x"] = dest.x;
         childUpdates["Destination/" + FAuth.CurrentUser.UserId + "/" + FAuth.CID + "/" + key + "/pos/y"] = dest.y;
         childUpdates["Destination/" + FAuth.CurrentUser.UserId + "/" + FAuth.CID + "/" + key + "/pos/z"] = dest.z;
+        reference.UpdateChildrenAsync(childUpdates).ContinueWith(task =>
+            {
+                UnityMainThread.wkr.AddJob(() => { callback(task);});
+            });
+    }
+    public void UpdateMonsterDestination(string id, Vector3 dest, Callback callback)
+    {
+        string key = FirebaseDatabase.DefaultInstance.RootReference.Push().Key;
+
+        Dictionary<string, object> childUpdates = new Dictionary<string, object>();
+        childUpdates["Destination/Town/Monster/" + id + "/" + key + "/pos/x"] = dest.x;
+        childUpdates["Destination/Town/Monster/" + id + "/" + key + "/pos/y"] = dest.y;
+        childUpdates["Destination/Town/Monster/" + id + "/" + key + "/pos/z"] = dest.z;
         reference.UpdateChildrenAsync(childUpdates).ContinueWith(task =>
             {
                 UnityMainThread.wkr.AddJob(() => { callback(task);});

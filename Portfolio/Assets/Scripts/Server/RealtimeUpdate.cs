@@ -20,6 +20,7 @@ public class RealtimeUpdate : MonoBehaviour
     public LayerMask ClickMask;
     //public string sendID = "higggo";
     GameObject users;
+    GameObject monsters;
     GameObject myCharacter = null;
     private void Start()
     {
@@ -33,6 +34,7 @@ public class RealtimeUpdate : MonoBehaviour
         }
 #endif
         users = GameObject.Find("Users");
+        users = GameObject.Find("Monsters");
         ClickMask = 1 << 8;
         ServerAysnInitialize();
     }
@@ -86,6 +88,11 @@ public class RealtimeUpdate : MonoBehaviour
         {
             c.GetComponent<CharacterMove>().RemoveListener();
         }
+
+        foreach (Transform monster in monsters.transform)
+        {
+            monster.GetComponent<Monster>().RemoveListener();
+        }
     }
     void OnApplicationFocus(bool hasFocus)
     {
@@ -93,7 +100,12 @@ public class RealtimeUpdate : MonoBehaviour
         {
             c.GetComponent<CharacterMove>().AddListener();
         }
-        if(reference == null)
+
+        foreach (Transform monster in monsters.transform)
+        {
+            monster.GetComponent<Monster>().AddListener();
+        }
+        if (reference == null)
         {
             reference.ChildAdded += HandleTownCharacterChildAdded;
             reference.ChildRemoved += HandleTownCharacterChildRemoved;
@@ -105,6 +117,11 @@ public class RealtimeUpdate : MonoBehaviour
         foreach (Transform c in users.transform)
         {
             c.GetComponent<CharacterMove>().RemoveListener();
+        }
+
+        foreach (Transform monster in monsters.transform)
+        {
+            monster.GetComponent<Monster>().RemoveListener();
         }
         reference.ChildAdded -= HandleTownCharacterChildAdded;
         reference.ChildRemoved -= HandleTownCharacterChildRemoved;
@@ -121,6 +138,44 @@ public class RealtimeUpdate : MonoBehaviour
         reference = FirebaseDatabase.DefaultInstance.GetReference("users/Town");
         reference.ChildAdded += HandleTownCharacterChildAdded;
         reference.ChildRemoved += HandleTownCharacterChildRemoved;
+
+        // Init Town Monsters
+        RDConnection.Read.GetTownMosters((task)=> {
+            foreach (DataSnapshot monsterIDData in task.Result.Children)
+            {
+                string monsterID = monsterIDData.Key;
+                string resourcePath = "";
+                string location = "";
+                Vector3 pos = Vector3.zero;
+                Debug.Log("monsterID : " + monsterIDData);
+                foreach (DataSnapshot monsterData in monsterIDData.Children)
+                {
+                    Debug.Log("monsterData : " + monsterData);
+                    if (monsterData.Key == "ResourcePath")
+                    {
+                        resourcePath = monsterData.Value.ToString();
+                    }
+                    if (monsterData.Key == "location")
+                    {
+                        location = monsterData.Value.ToString();
+                    }
+                    if (monsterData.Key == "pos")
+                    {
+                        foreach (DataSnapshot monsterPos in monsterData.Children)
+                        {
+                            if (monsterPos.Key == "x") float.TryParse(monsterPos.Value.ToString(), out pos.x);
+                            if (monsterPos.Key == "y") float.TryParse(monsterPos.Value.ToString(), out pos.y);
+                            if (monsterPos.Key == "z") float.TryParse(monsterPos.Value.ToString(), out pos.z);
+                        }
+                    }
+                }
+                GameObject monster = Instantiate(Resources.Load(resourcePath), pos, Quaternion.identity, GameObject.Find("Monsters").transform) as GameObject;
+                monster.GetComponent<Monster>().ID = monsterID;
+                monster.GetComponent<Monster>().resourcePath = resourcePath;
+                monster.GetComponent<Monster>().location = location;
+                monster.GetComponent<Monster>().initPos = pos;
+            }
+        });
     }
     public void HandleTownCharacterChildAdded(object sender, ChildChangedEventArgs args)
     {

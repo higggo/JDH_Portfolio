@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using Google;
 using Firebase.Firestore;
+using Firebase.Database;
 
 public class Signin : MonoBehaviour
 {
@@ -25,6 +26,10 @@ public class Signin : MonoBehaviour
     // Can be set via the property inspector in the Editor.
     void Awake()
     {
+#if UNITY_EDITOR
+        FirebaseFirestore.DefaultInstance.Settings.PersistenceEnabled = false;
+        FirebaseDatabase.DefaultInstance.SetPersistenceEnabled(false);
+#endif
         auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
 
         configuration = new GoogleSignInConfiguration
