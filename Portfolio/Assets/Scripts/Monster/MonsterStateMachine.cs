@@ -29,23 +29,24 @@ public class MonsterStateMachine : MonoBehaviour, MonsterBattleSystem
 
     bool completeSendPos = false;
     bool waitingSendPos = false;
+
     private void Awake()
     {
         Monster = this.GetComponent<Monster>();
 
+        Monster.EventHandler.OnDestReceive += MoveTo;
 
         // 람다식
         //myRangeSys.battle = () => { ChangeState(STATE.BATTLE); };
 
+        OrgPos = this.transform.position;
+
+        OrgAttackDelay = AttackDelay;
 
     }
     // Start is called before the first frame update
     void Start()
     {
-        Monster.EventHandler.OnDestReceive += MoveTo;
-        OrgPos = this.transform.position;
-
-        OrgAttackDelay = AttackDelay;
 
     }
 
@@ -53,7 +54,6 @@ public class MonsterStateMachine : MonoBehaviour, MonsterBattleSystem
     void Update()
     {
         StateProcess();
-
         /*
         myAnim.SetFloat("Speed", myNavAgent.velocity.magnitude);
         if(myNavAgent.remainingDistance <= Mathf.Epsilon)
@@ -120,7 +120,7 @@ public class MonsterStateMachine : MonoBehaviour, MonsterBattleSystem
                     dir.x = Random.Range(-1.0f, 1.0f);
                     dir.z = Random.Range(-1.0f, 1.0f);
                     dir.Normalize();
-                    Vector3 dest = OrgPos + dir * Random.Range(1.0f, 3.0f);
+                    Vector3 dest = OrgPos + dir * Random.Range(1.0f, 7.0f);
                     RDConnection.Write.UpdateMonsterDestination(GetComponent<Monster>().ID, dest, (task) => {
                         if (task.IsCompleted)
                         {
@@ -135,9 +135,9 @@ public class MonsterStateMachine : MonoBehaviour, MonsterBattleSystem
                 break;
             case STATE.ROAMING:
                 Monster.Animator.SetFloat("Speed", Monster.NavMeshAgent.velocity.magnitude / Monster.NavMeshAgent.speed);
-                if (Monster.NavMeshAgent.remainingDistance < 0.01f)
+                if (Monster.NavMeshAgent.isStopped || Monster.NavMeshAgent.velocity.magnitude <= 0.0f)
                 {
-                    Monster.NavMeshAgent.SetDestination(this.transform.position);
+                    //Monster.NavMeshAgent.SetDestination(this.transform.position);
                     ChangeState(STATE.NORMAL);
                 }
                 break;

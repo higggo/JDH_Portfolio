@@ -13,7 +13,6 @@ public class RealtimeUpdate : MonoBehaviour
     public AndroidJavaClass customClass;
 #endif
     bool isPaused = false;
-    float pauseCnt = 0.0f;
     //float timer = 0.0f;
     //float timer1 = 0.0f;
     DatabaseReference reference;
@@ -127,7 +126,6 @@ public class RealtimeUpdate : MonoBehaviour
         reference.ChildRemoved -= HandleTownCharacterChildRemoved;
         reference = null;
         isPaused = pauseStatus;
-        pauseCnt = 0.0f;
     }
 
     void ServerAysnInitialize()
