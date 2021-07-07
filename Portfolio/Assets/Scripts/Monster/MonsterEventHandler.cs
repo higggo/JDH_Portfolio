@@ -32,6 +32,6 @@ public class MonsterEventHandler : MonoBehaviour
 
         }
         OnDestReceive?.Invoke();
-        Debug.Log("HandleCharacterDestinationChildAdded : " + args.Snapshot);
+        //Debug.Log("HandleCharacterDestinationChildAdded : " + args.Snapshot);
     }
 }

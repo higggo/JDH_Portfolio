@@ -75,17 +75,16 @@ public class RealtimeUpdate : MonoBehaviour
             }
         }
     }
-    
-    public void OnApplicationQuit()
+    public void GameExit()
     {
         myCharacter = null;
         RDConnection.Write.RemoveCharacter();
         RDConnection.Write.RemoveDestination();
         reference.ChildAdded -= HandleTownCharacterChildAdded;
         reference.ChildRemoved -= HandleTownCharacterChildRemoved;
-        foreach (Transform c in users.transform)
+        foreach (Transform character in users.transform)
         {
-            c.GetComponent<CharacterMove>().RemoveListener();
+            character.GetComponent<CharacterMove>().RemoveListener();
         }
 
         foreach (Transform monster in monsters.transform)
@@ -93,40 +92,45 @@ public class RealtimeUpdate : MonoBehaviour
             monster.GetComponent<Monster>().RemoveListener();
         }
     }
-    void OnApplicationFocus(bool hasFocus)
+    public void OnApplicationQuit()
     {
-        foreach(Transform c in users.transform)
-        {
-            c.GetComponent<CharacterMove>().AddListener();
-        }
-
-        foreach (Transform monster in monsters.transform)
-        {
-            monster.GetComponent<Monster>().AddListener();
-        }
-        if (reference == null)
-        {
-            reference.ChildAdded += HandleTownCharacterChildAdded;
-            reference.ChildRemoved += HandleTownCharacterChildRemoved;
-        }
-        isPaused = !hasFocus;
+        GameExit();
     }
-    void OnApplicationPause(bool pauseStatus)
-    {
-        foreach (Transform c in users.transform)
-        {
-            c.GetComponent<CharacterMove>().RemoveListener();
-        }
 
-        foreach (Transform monster in monsters.transform)
-        {
-            monster.GetComponent<Monster>().RemoveListener();
-        }
-        reference.ChildAdded -= HandleTownCharacterChildAdded;
-        reference.ChildRemoved -= HandleTownCharacterChildRemoved;
-        reference = null;
-        isPaused = pauseStatus;
-    }
+    //void OnApplicationFocus(bool hasFocus)
+    //{
+    //    foreach(Transform character in users.transform)
+    //    {
+    //        character.GetComponent<CharacterMove>().AddListener();
+    //    }
+
+    //    foreach (Transform monster in monsters.transform)
+    //    {
+    //        monster.GetComponent<Monster>().AddListener();
+    //    }
+    //    if (reference == null)
+    //    {
+    //        reference.ChildAdded += HandleTownCharacterChildAdded;
+    //        reference.ChildRemoved += HandleTownCharacterChildRemoved;
+    //    }
+    //    isPaused = !hasFocus;
+    //}
+    //void OnApplicationPause(bool pauseStatus)
+    //{
+    //    foreach (Transform character in users.transform)
+    //    {
+    //        character.GetComponent<CharacterMove>().RemoveListener();
+    //    }
+
+    //    foreach (Transform monster in monsters.transform)
+    //    {
+    //        monster.GetComponent<Monster>().RemoveListener();
+    //    }
+    //    reference.ChildAdded -= HandleTownCharacterChildAdded;
+    //    reference.ChildRemoved -= HandleTownCharacterChildRemoved;
+    //    reference = null;
+    //    isPaused = pauseStatus;
+    //}
 
     void ServerAysnInitialize()
     {
