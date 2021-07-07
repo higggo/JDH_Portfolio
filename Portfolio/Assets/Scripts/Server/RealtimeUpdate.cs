@@ -91,6 +91,7 @@ public class RealtimeUpdate : MonoBehaviour
         {
             monster.GetComponent<Monster>().RemoveListener();
         }
+        Application.Quit();
     }
     public void OnApplicationQuit()
     {
