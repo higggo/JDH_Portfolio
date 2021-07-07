@@ -47,8 +47,11 @@ public class CharacterMove : MonoBehaviour
     public void RemoveListener()
     {
        // GetComponent<PathFinding>().handler.OnDestReceive -= GetComponent<PathFinding>().MoveTo;
-        reference.ChildAdded -= GetComponent<CharacterEventHandler>().HandleCharacterDestinationChildAdded;
-        reference = null;
+       if(reference != null)
+        {
+            reference.ChildAdded -= GetComponent<CharacterEventHandler>().HandleCharacterDestinationChildAdded;
+            reference = null;
+        }
     }
 
     void HandleValueChanged(object sender, ValueChangedEventArgs args)

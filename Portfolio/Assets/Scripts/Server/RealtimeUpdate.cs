@@ -77,21 +77,25 @@ public class RealtimeUpdate : MonoBehaviour
     }
     public void GameExit()
     {
-        myCharacter = null;
         RDConnection.Write.RemoveCharacter();
         RDConnection.Write.RemoveDestination();
         reference.ChildAdded -= HandleTownCharacterChildAdded;
         reference.ChildRemoved -= HandleTownCharacterChildRemoved;
-        foreach (Transform character in users.transform)
-        {
-            character.GetComponent<CharacterMove>().RemoveListener();
-        }
+        //foreach (Transform character in users.transform)
+        //{
+        //    character.GetComponent<CharacterMove>().RemoveListener();
+        //}
 
-        foreach (Transform monster in monsters.transform)
-        {
-            monster.GetComponent<Monster>().RemoveListener();
-        }
-        Application.Quit();
+        //foreach (Transform monster in monsters.transform)
+        //{
+        //    monster.GetComponent<Monster>().RemoveListener();
+        //}
+        myCharacter = null;
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit(); // 어플리케이션 종료
+#endif
     }
     public void OnApplicationQuit()
     {
