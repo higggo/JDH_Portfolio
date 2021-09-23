@@ -8,11 +8,11 @@ public class RDEventListener : RDReference
 {
     public void TownCharacterAddListener(System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)
     {
-        reference.Child("users").Child("Town").ChildAdded += handle;
+        reference.Child("Users").Child("Town").ChildAdded += handle;
     }
     public void TownCharacterRemoveListener(System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)
     {
-        reference.Child("users").Child("Town").ChildRemoved += handle;
+        reference.Child("Users").Child("Town").ChildRemoved += handle;
     }
 
     public void CharacterDestinationAddListener(ref DatabaseReference reference, System.EventHandler<Firebase.Database.ChildChangedEventArgs> handle)

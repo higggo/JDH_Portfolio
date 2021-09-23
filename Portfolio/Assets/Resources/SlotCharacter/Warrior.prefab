@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 116053306620079862}
   - component: {fileID: 974068182037579664}
   - component: {fileID: 216566165319016390}
-  - component: {fileID: 6952897353555357796}
+  - component: {fileID: 7095691785530136095}
   m_Layer: 0
   m_Name: Warrior
   m_TagString: Untagged
@@ -67,7 +67,7 @@ CapsuleCollider:
   m_Height: 1.3
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &6952897353555357796
+--- !u!114 &7095691785530136095
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -76,9 +76,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 6952897353555357794}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0575a667eceac4943b6984f500e9de25, type: 3}
+  m_Script: {fileID: 11500000, guid: 5071bcd1200630c489bb5b75f7cf8a91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentSpeed: 0
+  MaxSpeed: 0
+  AttackSpeed: 3
+  AttackRange: 3
+  damage: 30
+  MaxHP: 100
+  CurrentHP: 100
+  Destination: {x: 0, y: 0, z: 0}
 --- !u!1001 &994251503416148642
 PrefabInstance:
   m_ObjectHideFlags: 0

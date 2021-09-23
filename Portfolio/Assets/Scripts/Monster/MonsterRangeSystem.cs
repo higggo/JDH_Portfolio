@@ -9,17 +9,6 @@ public class MonsterRangeSystem : MonoBehaviour
     public string Enemy = "Player";
     public VoidDelVoid battle;
     public Transform Target = null;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     private void OnTriggerEnter(Collider other)
     {
         // Layer로 찾기

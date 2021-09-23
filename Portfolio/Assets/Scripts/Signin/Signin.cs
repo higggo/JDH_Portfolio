@@ -52,13 +52,13 @@ public class Signin : MonoBehaviour
                 foreach (KeyValuePair<string, object> pair in info)
                 {
 
-                    Debug.Log(string.Format("{0}: {1}", pair.Key, pair.Value));
+                    //Debug.Log(string.Format("{0}: {1}", pair.Key, pair.Value));
                     if (pair.Key == "ResourcePath")
                     {
                         s += pair.Value.ToString();
                         Debug.Log(pair.Value.ToString());
                     }
-                    if (pair.Key == "cid")
+                    if (pair.Key == "CID")
                     {
                         s += pair.Value.ToString();
                         Debug.Log(pair.Value.ToString());

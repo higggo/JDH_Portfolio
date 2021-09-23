@@ -8,7 +8,7 @@ public class FBRead : FBReference
 {
     public void GetMyCharacterList(CallbackQuery callback)
     {
-        Firebase.Firestore.Query capitalQuery = db.Collection("user").WhereEqualTo("uid", FAuth.CurrentUser.UserId);
+        Firebase.Firestore.Query capitalQuery = db.Collection("Users").WhereEqualTo("UID", FAuth.CurrentUser.UserId);
         capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
             UnityMainThread.wkr.AddJob(() => { callback(task);});
         });
@@ -16,7 +16,7 @@ public class FBRead : FBReference
 
     public void GetAllcharacter(CallbackQuery callback)
     {
-        Firebase.Firestore.Query capitalQuery = db.Collection("user");
+        Firebase.Firestore.Query capitalQuery = db.Collection("Users");
         capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
             UnityMainThread.wkr.AddJob(() => { callback(task);});
         });

@@ -4,282 +4,62 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RealtimeUpdate : MonoBehaviour
+public class RealtimeUpdate : RealtimeUpdate_Core
 {
-#if UNITY_ANDROID
-    public AndroidJavaClass unityClass;
-    public AndroidJavaObject unityActivity;
-    public AndroidJavaObject unityContext;
-    public AndroidJavaClass customClass;
-#endif
-    bool isPaused = false;
-    //float timer = 0.0f;
-    //float timer1 = 0.0f;
-    DatabaseReference reference;
-    public LayerMask ClickMask;
-    //public string sendID = "higggo";
-    GameObject users;
-    GameObject monsters;
-    GameObject myCharacter = null;
-    private void Start()
+    float clickTimer = 0.0f;
+    float clickInterval = 0.25f;
+    bool clickPossible = true;
+    private new void Start()
     {
-        StartCoroutine(UpdatePosServer());
-#if UNITY_ANDROID
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            sendActivityReference("com.higggo.service.mylibrary");
-
-            startService();
-        }
-#endif
-        users = GameObject.Find("Users");
-        users = GameObject.Find("Monsters");
-        ClickMask = 1 << 8;
-        ServerAysnInitialize();
+        //FirebaseDatabase.DefaultInstance.GetReference("Destination").Child("Town").Child("Users").ValueChanged += (sender, task)=>{ Debug.Log("ccccccccc"); };
+        base.Start();
     }
-
-    void sendActivityReference(string packageName)
+    private new void Update()
     {
-#if UNITY_ANDROID
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            //Replace with your full package name
-            unityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-            unityActivity = unityClass.GetStatic<AndroidJavaObject>("currentActivity");
-            customClass = new AndroidJavaClass(packageName);
-            customClass.CallStatic("receiveContextInstance", unityActivity);
-        }
-#endif
+        base.Update();
     }
-    void startService()
-    {
-#if UNITY_ANDROID
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            customClass.CallStatic("StartCheckerService");
-        }
-#endif
-    }
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("GetMouseButtonDown");
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 999.0f, ClickMask))
-            {
-                Debug.Log("Physics.Raycast");
-                RDConnection.Write.UpdateCharacterDestination(hit.point, (task) => { });
-            }
-        }
-    }
-    public void GameExit()
+    public override void SetCharacterCamera(GameObject target, string uid) { }
+    public override void CleanDatabase()
     {
         RDConnection.Write.RemoveCharacter();
         RDConnection.Write.RemoveDestination();
-        reference.ChildAdded -= HandleTownCharacterChildAdded;
-        reference.ChildRemoved -= HandleTownCharacterChildRemoved;
-        //foreach (Transform character in users.transform)
-        //{
-        //    character.GetComponent<CharacterMove>().RemoveListener();
-        //}
-
-        //foreach (Transform monster in monsters.transform)
-        //{
-        //    monster.GetComponent<Monster>().RemoveListener();
-        //}
-        myCharacter = null;
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit(); // 어플리케이션 종료
-#endif
     }
-    public void OnApplicationQuit()
+    public override void SetDestination()
     {
-        GameExit();
-    }
-
-    //void OnApplicationFocus(bool hasFocus)
-    //{
-    //    foreach(Transform character in users.transform)
-    //    {
-    //        character.GetComponent<CharacterMove>().AddListener();
-    //    }
-
-    //    foreach (Transform monster in monsters.transform)
-    //    {
-    //        monster.GetComponent<Monster>().AddListener();
-    //    }
-    //    if (reference == null)
-    //    {
-    //        reference.ChildAdded += HandleTownCharacterChildAdded;
-    //        reference.ChildRemoved += HandleTownCharacterChildRemoved;
-    //    }
-    //    isPaused = !hasFocus;
-    //}
-    //void OnApplicationPause(bool pauseStatus)
-    //{
-    //    foreach (Transform character in users.transform)
-    //    {
-    //        character.GetComponent<CharacterMove>().RemoveListener();
-    //    }
-
-    //    foreach (Transform monster in monsters.transform)
-    //    {
-    //        monster.GetComponent<Monster>().RemoveListener();
-    //    }
-    //    reference.ChildAdded -= HandleTownCharacterChildAdded;
-    //    reference.ChildRemoved -= HandleTownCharacterChildRemoved;
-    //    reference = null;
-    //    isPaused = pauseStatus;
-    //}
-
-    void ServerAysnInitialize()
-    {
-        //RDConnection.Listener.TownCharacterAddListener(HandleTownCharacterChildAdded);
-        //RDConnection.Listener.TownCharacterRemoveListener(HandleTownCharacterChildRemoved);
-
-        reference = FirebaseDatabase.DefaultInstance.GetReference("users/Town");
-        reference.ChildAdded += HandleTownCharacterChildAdded;
-        reference.ChildRemoved += HandleTownCharacterChildRemoved;
-
-        // Init Town Monsters
-        RDConnection.Read.GetTownMosters((task)=> {
-            foreach (DataSnapshot monsterIDData in task.Result.Children)
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Units.MyCharacter.GetComponent<Character>().Camera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 999.0f, ClickMask | (1 << LayerMask.NameToLayer("Monster"))))
             {
-                string monsterID = monsterIDData.Key;
-                string resourcePath = "";
-                string location = "";
-                Vector3 pos = Vector3.zero;
-                Debug.Log("monsterID : " + monsterIDData);
-                foreach (DataSnapshot monsterData in monsterIDData.Children)
+                if(clickPossible)
                 {
-                    Debug.Log("monsterData : " + monsterData);
-                    if (monsterData.Key == "ResourcePath")
+                    Debug.Log("Mouse Click");
+                    if (hit.transform.tag == "Monster")
                     {
-                        resourcePath = monsterData.Value.ToString();
+                        // Attack Target
+                        Units.MyCharacter.GetComponent<CharacterStatus>().ChasingTarget.SetValue(hit.transform.gameObject.GetComponent<Monster>().ID);
                     }
-                    if (monsterData.Key == "location")
+                    else
                     {
-                        location = monsterData.Value.ToString();
+                        Units.MyCharacter.GetComponent<CharacterStatus>().Destination.SetValue(hit.point);
+                        if (Units.MyCharacter.GetComponent<CharacterStatus>().ChasingTarget.GetValue() != "")
+                            Units.MyCharacter.GetComponent<CharacterStatus>().ChasingTarget.SetValue("");
                     }
-                    if (monsterData.Key == "pos")
-                    {
-                        foreach (DataSnapshot monsterPos in monsterData.Children)
-                        {
-                            if (monsterPos.Key == "x") float.TryParse(monsterPos.Value.ToString(), out pos.x);
-                            if (monsterPos.Key == "y") float.TryParse(monsterPos.Value.ToString(), out pos.y);
-                            if (monsterPos.Key == "z") float.TryParse(monsterPos.Value.ToString(), out pos.z);
-                        }
-                    }
-                }
-                GameObject monster = Instantiate(Resources.Load(resourcePath), pos, Quaternion.identity, GameObject.Find("Monsters").transform) as GameObject;
-                monster.GetComponent<Monster>().ID = monsterID;
-                monster.GetComponent<Monster>().resourcePath = resourcePath;
-                monster.GetComponent<Monster>().location = location;
-                monster.GetComponent<Monster>().initPos = pos;
-            }
-        });
-    }
-    public void HandleTownCharacterChildAdded(object sender, ChildChangedEventArgs args)
-    {
-        if (args.DatabaseError != null)
-        {
-            Debug.LogError(args.DatabaseError.Message);
-            return;
-        }
-        // Do something with the data in args.Snapshot
-
-        Debug.Log("HandleChildAdded : " + args.Snapshot);
-        UnityMainThread.wkr.AddJob(() => {
-            OnPlaceCharacters(args.Snapshot);
-        });
-        //OnPlaceCharacters(args.Snapshot);
-    }
-    public void HandleTownCharacterChildRemoved(object sender, ChildChangedEventArgs args)
-    {
-        if (args.DatabaseError != null)
-        {
-            Debug.LogError(args.DatabaseError.Message);
-            return;
-        }
-        // Do something with the data in args.Snapshot
-
-        Debug.Log("HandleChildAdded : " + args.Snapshot);
-
-        RemoveCharacters(args.Snapshot);
-    }
-    void RemoveCharacters(DataSnapshot dataSnapshot)
-    {
-        string cid = "";
-        string uid = "";
-        foreach (DataSnapshot character in dataSnapshot.Children)
-        {
-            if (character.Key == "cid") cid = character.Value.ToString();
-            if (character.Key == "uid") uid = character.Value.ToString();
-        }
-        GameObject obj = GameObject.Find(cid);
-        obj.GetComponent<CharacterMove>().RemoveListener();
-        Destroy(obj);
-    }
-    void OnPlaceCharacters(DataSnapshot dataSnapshot)
-    {
-        Debug.Log("OnPlaceCharacters");
-        Vector3 pos = Vector3.zero;
-        string cid = "";
-        string uid = "";
-        string resourcePath = "";
-        foreach (DataSnapshot characterData in dataSnapshot.Children)
-        {
-            if (characterData.Key == "pos")
-            {
-                foreach (DataSnapshot p in characterData.Children)
-                {
-                    if (p.Key == "x") float.TryParse(p.Value.ToString(), out pos.x);
-                    if (p.Key == "y") float.TryParse(p.Value.ToString(), out pos.y);
-                    if (p.Key == "z") float.TryParse(p.Value.ToString(), out pos.z);
+                    StartCoroutine(ClickRestrictor());
                 }
             }
-            if (characterData.Key == "cid") cid = characterData.Value.ToString();
-            if (characterData.Key == "uid") uid = characterData.Value.ToString();
-            if (characterData.Key == "ResourcePath") resourcePath = "PlayCharacter/" + characterData.Value.ToString();
-        }
-
-        GameObject character = Instantiate(Resources.Load(resourcePath), GameObject.Find("Users").transform) as GameObject;
-        character.transform.position = pos; 
-        character.name = cid;
-        character.GetComponent<CharacterMove>().uid = uid;
-        character.GetComponent<CharacterMove>().cid = cid;
-        character.transform.Find("CharacterCanvas").Find("ID").GetComponent<TMPro.TextMeshProUGUI>().text = cid;
-        character.transform.Find("CharacterCanvas").GetComponent<Billboard>().cam = Camera.main.transform;
-        if (uid == FAuth.CurrentUser.UserId)
-        {
-            Debug.Log("Camera Change");
-            myCharacter = character;
-            character.transform.Find("SpringArm").Find("PlayerCamera").gameObject.SetActive(true);
-            GameObject.FindGameObjectWithTag("MainCamera").SetActive(false);
-            //Billboard.I.SetMainCamera();
         }
     }
-    IEnumerator UpdatePosServer()
+    public IEnumerator ClickRestrictor()
     {
-        while(true)
+        clickPossible = false;
+        while(clickTimer < clickInterval)
         {
-            if(myCharacter != null)
-            {
-                Dictionary<string, object> childUpdates = new Dictionary<string, object>();
-                childUpdates["users/Town/" + FAuth.CurrentUser.UserId + "/pos/x"] = myCharacter.transform.position.x;
-                childUpdates["users/Town/" + FAuth.CurrentUser.UserId + "/pos/y"] = myCharacter.transform.position.y;
-                childUpdates["users/Town/" + FAuth.CurrentUser.UserId + "/pos/z"] = myCharacter.transform.position.z;
-                FirebaseDatabase.DefaultInstance.RootReference.UpdateChildrenAsync(childUpdates).ContinueWith(task =>
-                {
-                    //UnityMainThread.wkr.AddJob(() => { });
-                });
-            }
-            yield return new WaitForSeconds(1);
+            clickTimer += Time.deltaTime;
+            yield return null;
         }
+        clickTimer = 0.0f;
+        clickPossible = true;
     }
 }

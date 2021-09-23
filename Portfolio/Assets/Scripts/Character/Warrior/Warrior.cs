@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using Firebase.Database;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Warrior : MonoBehaviour
+using UnityEngine.Events;
+public class Warrior : Warrior_Core
 {
 }

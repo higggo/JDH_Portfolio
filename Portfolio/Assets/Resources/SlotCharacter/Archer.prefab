@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4033833235466446129}
   - component: {fileID: 4315528108785618007}
-  - component: {fileID: 4177399619473372980}
   - component: {fileID: 3847804632093447169}
+  - component: {fileID: 6435772325424359864}
   m_Layer: 0
   m_Name: Archer
   m_TagString: Untagged
@@ -53,18 +53,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4177399619473372980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6204525855911623589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c2e93d52bffb3040876632279446560, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!136 &3847804632093447169
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -79,6 +67,26 @@ CapsuleCollider:
   m_Height: 1.7
   m_Direction: 1
   m_Center: {x: 0, y: 0.8, z: 0}
+--- !u!114 &6435772325424359864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6204525855911623589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5071bcd1200630c489bb5b75f7cf8a91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentSpeed: 0
+  MaxSpeed: 0
+  AttackSpeed: 3
+  AttackRange: 3
+  damage: 30
+  MaxHP: 100
+  CurrentHP: 100
+  Destination: {x: 0, y: 0, z: 0}
 --- !u!1001 &321249661624657191
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1768749919651494245}
   - component: {fileID: 7436581096661888939}
   - component: {fileID: 8790375902425655703}
-  - component: {fileID: 213149901119139501}
+  - component: {fileID: 8979287116499095872}
   m_Layer: 0
   m_Name: Wizard
   m_TagString: Untagged
@@ -67,7 +67,7 @@ CapsuleCollider:
   m_Height: 1.3
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &213149901119139501
+--- !u!114 &8979287116499095872
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -76,9 +76,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 8639721712671698837}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2770947df4663a9448e27a018dc176a4, type: 3}
+  m_Script: {fileID: 11500000, guid: 5071bcd1200630c489bb5b75f7cf8a91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentSpeed: 0
+  MaxSpeed: 0
+  AttackSpeed: 3
+  AttackRange: 3
+  damage: 30
+  MaxHP: 100
+  CurrentHP: 100
+  Destination: {x: 0, y: 0, z: 0}
 --- !u!1001 &8345211140607448447
 PrefabInstance:
   m_ObjectHideFlags: 0

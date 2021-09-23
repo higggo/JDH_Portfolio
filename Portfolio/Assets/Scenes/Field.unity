@@ -107,15 +107,15 @@ NavMeshSettings:
   m_BuildSettings:
     serializedVersion: 2
     agentTypeID: 0
-    agentRadius: 0.17
+    agentRadius: 0.1
     agentHeight: 0.74
     agentSlope: 60
-    agentClimb: 1.32
+    agentClimb: 0.7
     ledgeDropHeight: 2
     maxJumpAcrossDistance: 0
     minRegionArea: 2
     manualCellSize: 0
-    cellSize: 0.05666667
+    cellSize: 0.033333335
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
@@ -7106,7 +7106,7 @@ GameObject:
   - component: {fileID: 1223018265}
   - component: {fileID: 1223018264}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Exit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7176,7 +7176,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1485654613}
-        m_MethodName: GameExit
+        m_MethodName: GameQuit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7299,6 +7299,9 @@ MonoBehaviour:
   ClickMask:
     serializedVersion: 2
     m_Bits: 288
+  users: {fileID: 73905913}
+  monsters: {fileID: 836913297}
+  myCharacter: {fileID: 0}
 --- !u!114 &1485654614
 MonoBehaviour:
   m_ObjectHideFlags: 0

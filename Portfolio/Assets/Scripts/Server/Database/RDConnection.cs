@@ -50,4 +50,9 @@ public class RDConnection : MonoBehaviour
             return listener;
         }
     }
+
+    public static object UpdateTime()
+    {
+        return ServerValue.Timestamp;
+    }
 }

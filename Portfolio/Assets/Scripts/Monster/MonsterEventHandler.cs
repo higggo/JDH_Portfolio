@@ -10,26 +10,22 @@ public class MonsterEventHandler : MonoBehaviour
     {
         TaskData = GetComponent<MonsterTaskData>();
     }
-    public void HandleDestinationChildAdded(object sender, ChildChangedEventArgs args)
+    public void HandleDestinationChildAdded(object sender, ValueChangedEventArgs args)
     {
+        //Debug.Log("HandleDestinationChildAdded");
         if (args.DatabaseError != null)
         {
-            Debug.LogError(args.DatabaseError.Message);
+            //Debug.LogError(args.DatabaseError.Message);
             return;
         }
-        // Do something with the data in args.Snapshot
-        foreach (DataSnapshot child in args.Snapshot.Children)
+        if (args.Snapshot.Key == "Pos")
         {
-            if (child.Key == "pos")
+            foreach (DataSnapshot pos in args.Snapshot.Children)
             {
-                foreach (DataSnapshot pos in child.Children)
-                {
-                    if (pos.Key == "x") float.TryParse(pos.Value.ToString(), out TaskData.NextDestination.x);
-                    if (pos.Key == "y") float.TryParse(pos.Value.ToString(), out TaskData.NextDestination.y);
-                    if (pos.Key == "z") float.TryParse(pos.Value.ToString(), out TaskData.NextDestination.z);
-                }
+                //if (pos.Key == "X") float.TryParse(pos.Value.ToString(), out TaskData.NextDestination.x);
+                //if (pos.Key == "Y") float.TryParse(pos.Value.ToString(), out TaskData.NextDestination.y);
+                //if (pos.Key == "Z") float.TryParse(pos.Value.ToString(), out TaskData.NextDestination.z);
             }
-
         }
         OnDestReceive?.Invoke();
         //Debug.Log("HandleCharacterDestinationChildAdded : " + args.Snapshot);

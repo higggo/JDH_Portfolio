@@ -4,57 +4,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Monster : MonoBehaviour
+public class Monster : Monster_Core
 {
-    // Start is called before the first frame update
-    public string ID;
-    public string resourcePath;
-    public string location;
-    public Vector3 initPos;
-
-    public MonsterAnimEvent AnimEvent = null;
-    public MonsterEventHandler EventHandler = null;
-    public MonsterStateMachine StateMachine = null;
-    public MonsterTaskData TaskData = null;
-    public NavMeshAgent NavMeshAgent = null;
-    public Animator Animator = null;
-    public MonsterRangeSystem RangeSys = null;
-
-    DatabaseReference reference;
-    private void Awake()
+    new void Awake()
     {
-        AnimEvent = this.GetComponent<MonsterAnimEvent>();
-        EventHandler = this.GetComponent<MonsterEventHandler>();
-        StateMachine = this.GetComponent<MonsterStateMachine>();
-        TaskData = this.GetComponent<MonsterTaskData>();
-        NavMeshAgent = this.GetComponent<NavMeshAgent>();
-        Animator = this.GetComponent<Animator>();
-        RangeSys = this.GetComponent<MonsterRangeSystem>();
+        base.Awake();
 
     }
-    void Start()
+    new void Start()
     {
-        AddListener();
+        base.Start();
+    }
+    public override void ApplyDamage(float damage)
+    {
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void ApplyHit(GameObject target, float damage)
     {
-
     }
 
-    public void AddListener()
+    public override void ApplyHP()
     {
-        if (reference == null)
-        {
-            reference = FirebaseDatabase.DefaultInstance.GetReference("Destination/Town/Monster/" + ID);
-            reference.ChildAdded += EventHandler.HandleDestinationChildAdded;
-        }
     }
-    public void RemoveListener()
+    public override void StartChasing()
     {
-        reference.ChildAdded -= EventHandler.HandleDestinationChildAdded;
-        reference = null;
+    }
+    public override void StopChasing()
+    {
+    }
+
+    public override void ChaseTarget(GameObject target)
+    {
     }
 }
 

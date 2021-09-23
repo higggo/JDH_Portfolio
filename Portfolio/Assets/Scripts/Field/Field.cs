@@ -8,9 +8,9 @@ public class Field : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        TextField.text = MyInfo.I.cid;
-        TextField.text += "\n" + MyInfo.I.uid;
-        TextField.text += "\n" + MyInfo.I.resourcePath;
+        //TextField.text = MyInfo.I.cid;
+        //TextField.text += "\n" + MyInfo.I.uid;
+        //TextField.text += "\n" + MyInfo.I.resourcePath;
     }
 
     // Update is called once per frame

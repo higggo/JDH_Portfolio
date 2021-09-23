@@ -12,7 +12,7 @@ public class CharacterEventHandler : MonoBehaviour
 {
     public Broadcast OnDestReceive = null;
     public DestHandlerData DestHandlerData;
-    public void HandleCharacterDestinationChildAdded(object sender, ChildChangedEventArgs args)
+    public void HandleDestination(object sender, ValueChangedEventArgs args)
     {
         if (args.DatabaseError != null)
         {
@@ -20,20 +20,39 @@ public class CharacterEventHandler : MonoBehaviour
             return;
         }
         // Do something with the data in args.Snapshot
-        foreach (DataSnapshot child in args.Snapshot.Children)
+        //foreach (DataSnapshot child in args.Snapshot.Children)
+        //{
+        //}
+
+        if (args.Snapshot.Key == "Pos")
         {
-            if (child.Key == "pos")
+            foreach (DataSnapshot pos in args.Snapshot.Children)
             {
-                foreach (DataSnapshot pos in child.Children)
-                {
-                    if (pos.Key == "x") float.TryParse(pos.Value.ToString(), out DestHandlerData.pos.x);
-                    if (pos.Key == "y") float.TryParse(pos.Value.ToString(), out DestHandlerData.pos.y);
-                    if (pos.Key == "z") float.TryParse(pos.Value.ToString(), out DestHandlerData.pos.z);
-                }
+                if (pos.Key == "X") float.TryParse(pos.Value.ToString(), out DestHandlerData.pos.x);
+                if (pos.Key == "Y") float.TryParse(pos.Value.ToString(), out DestHandlerData.pos.y);
+                if (pos.Key == "Z") float.TryParse(pos.Value.ToString(), out DestHandlerData.pos.z);
             }
-            if (child.Key == "uid") DestHandlerData.uid = child.Value.ToString();
         }
+        if (args.Snapshot.Key == "UID") DestHandlerData.uid = args.Snapshot.Value.ToString();
         OnDestReceive?.Invoke();
-        Debug.Log("HandleCharacterDestinationChildAdded : " + args.Snapshot);
+        //Debug.Log("HandleCharacterDestinationChildAdded : " + args.Snapshot);
+        //Debug.Log("HandleCharacterDestinationChildAdded Pos : " + DestHandlerData.pos);
+    }
+
+    public Broadcast OnAttackTargetReceive = null;
+    public string AttackTarget = "";
+    public void HandleAttackTarget(object sender, ValueChangedEventArgs args)
+    {
+        if (args.DatabaseError != null)
+        {
+            Debug.LogError(args.DatabaseError.Message);
+            return;
+        }
+        if(args.Snapshot.Exists)
+        {
+            AttackTarget = args.Snapshot.Value.ToString(); 
+            Debug.Log(args.Snapshot.Value.ToString());
+            OnAttackTargetReceive?.Invoke();
+        }
     }
 }

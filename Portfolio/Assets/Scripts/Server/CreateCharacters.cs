@@ -74,7 +74,7 @@ public class CreateCharacters : MonoBehaviour
     public void LogOut()
     {
         Debug.Log("LogOut");
-        reference.Child("users").Child(user.UserId).RemoveValueAsync();
+        reference.Child("Users").Child(user.UserId).RemoveValueAsync();
     }
 
     public void NextCharacter()
@@ -100,19 +100,21 @@ public class CreateCharacters : MonoBehaviour
         Dictionary<string, object> user = new Dictionary<string, object>
         {
             { "ResourcePath", CollectionCharacters[selectNum].path },
-            { "uid", auth.CurrentUser.UserId },
-            { "cid", ID_Inputfield.text },
-            { "state", "Idle" },
-            { "location", "Town"},
-            { "pos", new Dictionary<string, object>
+            { "UID", auth.CurrentUser.UserId },
+            { "CID", ID_Inputfield.text },
+            { "State", "Idle" },
+            { "MaxHP", CollectionCharacters[selectNum].Character.GetComponent<CharacterStatus>().MaxHP },
+            { "CurrentHP", CollectionCharacters[selectNum].Character.GetComponent<CharacterStatus>().CurrentHP },
+            { "Location", "Town"},
+            { "Pos", new Dictionary<string, object>
                 {
-                        { "x", 0.0f },
-                        { "y", 1.0f },
-                        { "z", 0.0f }
+                        { "X", 0.0f },
+                        { "Y", 1.0f },
+                        { "Z", 0.0f }
                 }
             }
         };
-        db.Collection("user").AddAsync(user).ContinueWithOnMainThread(task => {
+        db.Collection("Users").AddAsync(user).ContinueWithOnMainThread(task => {
             DocumentReference addedDocRef = task.Result;
             Debug.Log(string.Format("Added document with ID: {0}.", addedDocRef.Id));
             Debug.Log("Create User Characater");
@@ -134,7 +136,7 @@ public class CreateCharacters : MonoBehaviour
         }
 
         ingLIst.Add(true);
-        Firebase.Firestore.Query allCitiesQuery = db.Collection("user").WhereEqualTo("cid", cid);
+        Firebase.Firestore.Query allCitiesQuery = db.Collection("Users").WhereEqualTo("CID", cid);
         allCitiesQuery.GetSnapshotAsync().ContinueWithOnMainThread(querySnapshotTask =>
         {
             foreach (DocumentSnapshot documentSnapshot in querySnapshotTask.Result.Documents)
@@ -147,7 +149,7 @@ public class CreateCharacters : MonoBehaviour
         });
 
         ingLIst.Add(true);
-        Firebase.Firestore.Query capitalQuery = db.Collection("user").WhereEqualTo("uid", auth.CurrentUser.UserId);
+        Firebase.Firestore.Query capitalQuery = db.Collection("Users").WhereEqualTo("UID", auth.CurrentUser.UserId);
         capitalQuery.GetSnapshotAsync().ContinueWithOnMainThread(task => {
             QuerySnapshot capitalQuerySnapshot = task.Result;
             if (capitalQuerySnapshot.Count >= 10)
@@ -210,7 +212,7 @@ public class CreateCharacters : MonoBehaviour
                 {
                     myCharacter.path = pair.Value.ToString();
                 }
-                if (pair.Key == "cid")
+                if (pair.Key == "CID")
                 {
                     myCharacter.cid = pair.Value.ToString();
                 }

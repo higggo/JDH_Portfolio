@@ -3114,7 +3114,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6843844604063141844}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.5524499, z: -0.5984893}
+  m_LocalPosition: {x: 1.8991281e-21, y: 0.5524499, z: -0.5984893}
   m_LocalScale: {x: 1.0547386, y: 1.0547386, z: 1.0547386}
   m_Children: []
   m_Father: {fileID: 6841472032398421356}
@@ -10412,8 +10412,8 @@ GameObject:
   - component: {fileID: 6845139753334590620}
   - component: {fileID: 6845139753334590621}
   - component: {fileID: 6845139753334590622}
-  - component: {fileID: 7997838633808082546}
-  - component: {fileID: 2941062988191371052}
+  - component: {fileID: 6845139753334590623}
+  - component: {fileID: 4764750826323073721}
   - component: {fileID: 6845139753334590616}
   - component: {fileID: 6845139753334590617}
   - component: {fileID: 6845139753334590618}
@@ -10475,6 +10475,12 @@ MonoBehaviour:
   resourcePath: 
   location: 
   initPos: {x: 0, y: 0, z: 0}
+  AnimEvent: {fileID: 6845139753334590621}
+  StateMachine: {fileID: 6845139753334590622}
+  Status: {fileID: 4764750826323073721}
+  NavMeshAgent: {fileID: 6845139753334590617}
+  Animator: {fileID: 3671025379347626829}
+  RangeSys: {fileID: 6845139753806134817}
 --- !u!114 &6845139753334590621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10500,12 +10506,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myState: 0
-  myNavAgent: {fileID: 0}
-  myRangeSys: {fileID: 0}
   radius: 10
   AttackDelay: 1
-  myAnimEvent: {fileID: 0}
---- !u!114 &7997838633808082546
+  Monster: {fileID: 0}
+--- !u!114 &6845139753334590623
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10514,10 +10518,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6845139753334590612}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44cbe9b811a7d6e49a0f157dda603b08, type: 3}
+  m_Script: {fileID: 11500000, guid: bd0169abdebf9894792edea344310d08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2941062988191371052
+  tilelist: []
+  savePos: {x: 0, y: 0, z: 0}
+  resourcePath: Monster/BowHunter
+--- !u!114 &4764750826323073721
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10526,7 +10533,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6845139753334590612}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df8cd6eaf8478474cb4d259396ec0171, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a0d49a6f444e7a4db5b4abe1840f0dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!136 &6845139753334590616
@@ -10557,7 +10564,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 3000
-  m_StoppingDistance: 0
+  m_StoppingDistance: 0.01
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -10577,7 +10584,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
